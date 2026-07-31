@@ -1,0 +1,4 @@
+# Generated derived outputs must not be committed.
+# Keep reproducible artifacts local until an explicit storage policy exists.
+*
+!.gitignore

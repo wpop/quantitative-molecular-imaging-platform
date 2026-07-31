@@ -1,0 +1,4 @@
+# Real downloaded medical imaging files must not be committed.
+# Keep this directory local and use only public, deidentified datasets.
+*
+!.gitignore
