@@ -31,20 +31,31 @@ dataset:
   access_notes: Public candidate collection for review only; no DICOM files are downloaded in this step.
 
 selected_studies:
-  - study_uid: PLACEHOLDER_STUDY_INSTANCE_UID
+  - subject_id: CT-PET-VI-01
+    study_uid: 1.3.6.1.4.1.14519.5.2.1.297577087050970310787702792940607009472
     collection_name: CT-vs-PET-Ventilation-Imaging
-    notes: PLACEHOLDER_REASON_THIS_DEIDENTIFIED_STUDY_IS_SUITABLE_AFTER_METADATA_REVIEW
+    study_description: RT^RT_RespLowBreathRateRNS (Adult)
+    study_date: 1996-04-30 00:00:00.0
+    notes: Metadata-only TCIA/NBIA query selected this deterministic first suitable study for tiny subset review.
     selected_series:
-      - series_uid: PLACEHOLDER_SERIES_INSTANCE_UID_1
-        modality: PLACEHOLDER_MODALITY
-        notes: PLACEHOLDER_SERIES_SELECTION_NOTES
-      - series_uid: PLACEHOLDER_SERIES_INSTANCE_UID_2
-        modality: PLACEHOLDER_MODALITY
-        notes: PLACEHOLDER_SERIES_SELECTION_NOTES
+      - series_uid: 1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254
+        modality: CT
+        series_description: RespLow  2.0  B30s  80 % Ex - 100 % In
+        body_part_examined: CHEST
+        expected_file_count_from_metadata: 990
+        total_size_bytes_from_metadata: 522654776
+        notes: Real series metadata returned by TCIA/NBIA; DICOM files were not downloaded.
+      - series_uid: 1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533
+        modality: PT
+        series_description: Galligas Lung
+        body_part_examined: PLACEHOLDER_NOT_RETURNED
+        expected_file_count_from_metadata: 159
+        total_size_bytes_from_metadata: 51521232
+        notes: Real series metadata returned by TCIA/NBIA; DICOM files were not downloaded.
 
 review_notes:
   - Candidate collection is public and licensed CC BY 4.0.
   - Full collection is too large for test fixtures and must not be downloaded wholesale.
-  - PLACEHOLDER_CONFIRM_DEIDENTIFICATION_STATUS_FROM_SOURCE_METADATA
-  - PLACEHOLDER_CONFIRM_METADATA_AVAILABLE_FOR_TINY_SUBSET
-  - PLACEHOLDER_SELECT_SMALL_TEST_SUBSET_AFTER_METADATA_QUERY
+  - Metadata query completed without downloading DICOM files.
+  - Exact subset file counts were determined from TCIA/NBIA series-size metadata.
+  - SOPInstanceUID, local file paths, checksums, and raw DICOM files remain placeholders or absent.

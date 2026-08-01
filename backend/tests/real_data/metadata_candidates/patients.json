@@ -1,0 +1,182 @@
+[
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-01",
+    "PatientName": "CT-PET-VI-01",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-02",
+    "PatientName": "CT-PET-VI-02",
+    "PatientSex": "M",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-03",
+    "PatientName": "CT-PET-VI-03",
+    "PatientSex": "M",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-04",
+    "PatientName": "CT-PET-VI-04",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-05",
+    "PatientName": "CT-PET-VI-05",
+    "PatientSex": "M",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-06",
+    "PatientName": "CT-PET-VI-06",
+    "PatientSex": "M",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-07",
+    "PatientName": "CT-PET-VI-07",
+    "PatientSex": "M",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-08",
+    "PatientName": "CT-PET-VI-08",
+    "PatientSex": "M",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-09",
+    "PatientName": "CT-PET-VI-09",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-10",
+    "PatientName": "CT-PET-VI-10",
+    "PatientSex": "M",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-11",
+    "PatientName": "CT-PET-VI-11",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-12",
+    "PatientName": "CT-PET-VI-12",
+    "PatientSex": "M",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-13",
+    "PatientName": "CT-PET-VI-13",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-14",
+    "PatientName": "CT-PET-VI-14",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-15",
+    "PatientName": "CT-PET-VI-15",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-16",
+    "PatientName": "CT-PET-VI-16",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-17",
+    "PatientName": "CT-PET-VI-17",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-18",
+    "PatientName": "CT-PET-VI-18",
+    "PatientSex": "M",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-19",
+    "PatientName": "CT-PET-VI-19",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  },
+  {
+    "Collection": "CT-vs-PET-Ventilation-Imaging",
+    "PatientId": "CT-PET-VI-20",
+    "PatientName": "CT-PET-VI-20",
+    "PatientSex": "F",
+    "Phantom": "NO",
+    "SpeciesCode": "337915000",
+    "SpeciesDescription": "Homo sapiens"
+  }
+]
