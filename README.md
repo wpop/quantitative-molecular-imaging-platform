@@ -95,8 +95,20 @@ Workflow scripts:
 - `scripts/download_tcia_selected_series.py`
 - `scripts/validate_local_dicom_subset.py`
 - `scripts/ingest_local_dicom_metadata.py`
+- `scripts/run_local_demo_pipeline.py`
 
 See [docs/local_workflow.md](docs/local_workflow.md) for the command sequence.
+
+For a one-command local backend demo after the selected DICOM subset is already
+downloaded locally:
+
+```sh
+POSTGRES_PASSWORD=qmip_dev_password python scripts/run_local_demo_pipeline.py
+```
+
+The demo validates local data, ingests metadata, runs the metadata-only geometry
+summary, and prints database counts. It does not download data or read pixel
+arrays.
 
 ## API Usage
 
