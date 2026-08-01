@@ -82,6 +82,12 @@ files and does not expose pixel data.
 See [local_workflow.md](local_workflow.md) for local setup commands and
 [api_usage.md](api_usage.md) for read-only API examples.
 
+## Step 11 Series Geometry Summary
+
+Step 11 computes a minimal quantitative geometry summary from already ingested
+PostgreSQL metadata. It does not read DICOM files, does not read pixel data,
+and stores the results as analysis metadata.
+
 ## Selection Criteria
 
 A candidate dataset should meet all of the following criteria:

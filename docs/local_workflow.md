@@ -107,6 +107,17 @@ http://localhost:8000/api/v1/overview/
 
 See [api_usage.md](api_usage.md) for endpoint examples.
 
+## Metadata-Only Geometry Summary
+
+Run the first quantitative metadata summary after ingestion:
+
+```sh
+POSTGRES_PASSWORD=qmip_dev_password python scripts/run_series_geometry_summary.py
+```
+
+This command reads PostgreSQL metadata only. It does not read DICOM files or
+pixel arrays.
+
 ## Tests And Quality Checks
 
 Run tests from the repository root:
