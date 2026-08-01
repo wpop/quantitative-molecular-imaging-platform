@@ -40,6 +40,16 @@ one subject, one study, and one or two series. Full dataset download is not
 allowed for tests. Exact DICOM file counts for the selected subset are known
 only after source metadata is queried.
 
+## Step 5 Local Selected Series Download
+
+Step 5 downloads only the selected CT and PT series for subject `CT-PET-VI-01`.
+The expected local subset size is about 574 MB across 1,149 DICOM objects. This
+is acceptable for optional local validation, but raw DICOM files must not be
+stored in Git or required by CI.
+
+Future CI should use metadata-only checks or optional local-data tests. Full
+dataset download remains forbidden for tests.
+
 ## Selection Criteria
 
 A candidate dataset should meet all of the following criteria:

@@ -1,0 +1,42 @@
+{
+  "checksum_file": "backend/tests/real_data/checksums.sha256",
+  "collection": "CT-vs-PET-Ventilation-Imaging",
+  "expected_total_bytes": 574176008,
+  "expected_total_objects": 1149,
+  "extracted_total_dicom_bytes": 574176008,
+  "extracted_total_dicom_files": 1149,
+  "full_collection_downloaded": false,
+  "output_directory": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01",
+  "raw_dicom_stored_in_git": false,
+  "selected_series_only": true,
+  "series": [
+    {
+      "downloaded_zip_bytes": 263690202,
+      "expected_objects": 990,
+      "expected_size_bytes": 522654776,
+      "extracted_dicom_bytes": 522654776,
+      "extracted_dicom_count": 990,
+      "first_dicom_file": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01/CT_1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254/00000001.dcm",
+      "last_dicom_file": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01/CT_1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254/00000990.dcm",
+      "modality": "CT",
+      "output_directory": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01/CT_1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254",
+      "removed_non_dicom_files": 1,
+      "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254"
+    },
+    {
+      "downloaded_zip_bytes": 5765950,
+      "expected_objects": 159,
+      "expected_size_bytes": 51521232,
+      "extracted_dicom_bytes": 51521232,
+      "extracted_dicom_count": 159,
+      "first_dicom_file": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01/PT_1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533/00000001.dcm",
+      "last_dicom_file": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01/PT_1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533/00000159.dcm",
+      "modality": "PT",
+      "output_directory": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01/PT_1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533",
+      "removed_non_dicom_files": 1,
+      "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533"
+    }
+  ],
+  "study_instance_uid": "1.3.6.1.4.1.14519.5.2.1.297577087050970310787702792940607009472",
+  "subject_id": "CT-PET-VI-01"
+}

@@ -28,3 +28,13 @@ The first candidate dataset has been selected for review:
 No DICOM files are downloaded in this step. Study-level, series-level,
 instance-level, file-path, and checksum fields remain placeholders until they
 are verified from real source metadata in a later step.
+
+## Local Selected DICOM Subset
+
+The selected CT and PT DICOM series may be downloaded locally for validation
+with `scripts/download_tcia_selected_series.py`. Raw DICOM files remain outside
+Git under `datasets/raw/`.
+
+The `checksums.sha256` file may contain SHA-256 checksums for the local selected
+subset after that download. The full collection must not be downloaded for
+tests.
