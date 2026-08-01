@@ -67,6 +67,12 @@ ORM. It does not download data and does not read pixel data.
 The expected result for the selected subset is 1 `ImagingStudy`, 2
 `ImagingSeries` records, and 1,149 `ImagingInstance` records.
 
+## Step 8 Read-Only Metadata API
+
+Step 8 exposes ingested PostgreSQL metadata through read-only REST API
+endpoints. The API is metadata-only: it does not read raw DICOM files, does not
+read pixel data, and does not expose pixel data.
+
 ## Selection Criteria
 
 A candidate dataset should meet all of the following criteria:
