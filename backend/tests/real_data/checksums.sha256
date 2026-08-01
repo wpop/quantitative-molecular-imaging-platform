@@ -1,0 +1,10 @@
+# Placeholder SHA-256 checksum file for real public deidentified DICOM files.
+#
+# Format:
+# <sha256>  <relative_path_to_dicom_file>
+#
+# Example format only, not a real checksum:
+# PLACEHOLDER_SHA256_WHEN_REAL_FILE_EXISTS  PLACEHOLDER_RELATIVE_PATH_TO_DICOM_FILE
+#
+# Do not add real hashes until real DICOM files exist outside Git and the
+# selected public deidentified dataset has been documented in the manifest.
