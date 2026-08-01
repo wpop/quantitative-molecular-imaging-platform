@@ -61,6 +61,8 @@ datasets/downloads/*
 !datasets/downloads/.gitignore
 datasets/derived/*
 !datasets/derived/.gitignore
+datasets/raw/*
+!datasets/raw/.gitignore
 
 # IDE and operating system files
 .idea/
