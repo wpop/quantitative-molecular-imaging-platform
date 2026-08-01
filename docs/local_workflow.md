@@ -92,6 +92,28 @@ The ingestion is idempotent for `ImagingStudy`, `ImagingSeries`, and
 `ImagingInstance`. It reads DICOM headers only with `pydicom`
 `stop_before_pixels=True`.
 
+## One-Command Local Backend Demo
+
+After the selected DICOM subset has already been downloaded locally, run the
+reviewer demo pipeline from the repository root:
+
+```sh
+POSTGRES_PASSWORD=qmip_dev_password python scripts/run_local_demo_pipeline.py
+```
+
+The pipeline validates local checksums and DICOM headers, ingests metadata into
+PostgreSQL, runs the metadata-only geometry summary, and prints final database
+counts. It does not download data, call external services, read pixel arrays, or
+perform image analysis.
+
+Optional flags can skip individual steps:
+
+```sh
+python scripts/run_local_demo_pipeline.py --skip-validation
+python scripts/run_local_demo_pipeline.py --skip-ingestion
+python scripts/run_local_demo_pipeline.py --skip-analysis
+```
+
 ## Run The API Server
 
 ```sh
