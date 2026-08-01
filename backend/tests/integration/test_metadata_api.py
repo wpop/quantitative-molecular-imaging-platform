@@ -81,6 +81,7 @@ def metadata_objects() -> MetadataObjects:
         "/api/v1/imaging/series/",
         "/api/v1/imaging/instances/",
         "/api/v1/ingestion/jobs/",
+        "/api/v1/overview/",
     ],
 )
 def test_list_endpoints_return_200(
@@ -92,6 +93,37 @@ def test_list_endpoints_return_200(
 
     assert response.status_code == 200
     assert response.json()
+
+
+@pytest.mark.django_db
+def test_overview_endpoint_returns_expected_summary(
+    api_client: APIClient,
+    metadata_objects: MetadataObjects,
+) -> None:
+    response = api_client.get("/api/v1/overview/")
+    payload = response.json()
+
+    assert response.status_code == 200
+    assert payload["studies_count"] == 1
+    assert payload["series_count"] == 1
+    assert payload["instances_count"] == 1
+    assert payload["modalities"] == ["CT"]
+    assert payload["source_datasets"] == ["test-dataset"]
+    assert payload["source_subjects"] == ["test-subject"]
+    assert payload["ingestion_jobs_count"] == 1
+    assert payload["latest_ingestion_status"] == IngestionJob.Status.COMPLETED
+    assert payload["latest_ingestion_started_at"] is not None
+    assert payload["latest_ingestion_completed_at"] is not None
+
+
+@pytest.mark.django_db
+def test_overview_endpoint_rejects_post(
+    api_client: APIClient,
+    metadata_objects: MetadataObjects,
+) -> None:
+    response = api_client.post("/api/v1/overview/", data={})
+
+    assert response.status_code == 405
 
 
 @pytest.mark.django_db
