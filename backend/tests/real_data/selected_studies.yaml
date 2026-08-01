@@ -1,0 +1,28 @@
+# Human-readable template for selected real public deidentified imaging studies.
+# All values are placeholders until a real dataset is selected. Do not replace
+# them with synthetic DICOM metadata or private patient information.
+
+manifest_status: PLACEHOLDER_NOT_SELECTED
+dataset:
+  name: PLACEHOLDER_DATASET_NAME
+  source_url: PLACEHOLDER_PUBLIC_OR_RESEARCH_ACCESS_URL
+  collection_name: PLACEHOLDER_COLLECTION_NAME
+  access_notes: PLACEHOLDER_LICENSE_AND_ACCESS_NOTES
+
+selected_studies:
+  - study_uid: PLACEHOLDER_STUDY_INSTANCE_UID
+    collection_name: PLACEHOLDER_COLLECTION_NAME
+    notes: PLACEHOLDER_REASON_THIS_DEIDENTIFIED_STUDY_IS_SUITABLE
+    selected_series:
+      - series_uid: PLACEHOLDER_SERIES_INSTANCE_UID_1
+        modality: PLACEHOLDER_MODALITY
+        notes: PLACEHOLDER_SERIES_SELECTION_NOTES
+      - series_uid: PLACEHOLDER_SERIES_INSTANCE_UID_2
+        modality: PLACEHOLDER_MODALITY
+        notes: PLACEHOLDER_SERIES_SELECTION_NOTES
+
+review_notes:
+  - PLACEHOLDER_CONFIRM_PUBLIC_OR_RESEARCH_ACCESSIBLE
+  - PLACEHOLDER_CONFIRM_DEIDENTIFICATION_STATUS
+  - PLACEHOLDER_CONFIRM_METADATA_AVAILABLE
+  - PLACEHOLDER_CONFIRM_SMALL_TEST_SUBSET

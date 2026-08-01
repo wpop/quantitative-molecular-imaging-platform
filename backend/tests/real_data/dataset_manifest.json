@@ -1,0 +1,67 @@
+{
+  "manifest_version": "PLACEHOLDER_MANIFEST_VERSION",
+  "manifest_status": "PLACEHOLDER_NOT_SELECTED",
+  "dataset_identity": {
+    "dataset_name": "PLACEHOLDER_DATASET_NAME",
+    "collection_name": "PLACEHOLDER_COLLECTION_NAME",
+    "dataset_version": "PLACEHOLDER_DATASET_VERSION_OR_RELEASE",
+    "selection_date": "PLACEHOLDER_YYYY-MM-DD"
+  },
+  "source": {
+    "source_url": "PLACEHOLDER_PUBLIC_OR_RESEARCH_ACCESS_URL",
+    "download_instructions": "PLACEHOLDER_EXTERNAL_DOWNLOAD_INSTRUCTIONS_NO_DATA_IN_GIT",
+    "source_record_id": "PLACEHOLDER_SOURCE_RECORD_OR_COLLECTION_ID"
+  },
+  "license_access_notes": {
+    "license": "PLACEHOLDER_LICENSE_OR_DATA_USE_TERMS",
+    "access_requirements": "PLACEHOLDER_PUBLIC_OR_RESEARCH_ACCESS_REQUIREMENTS",
+    "deidentification_notes": "PLACEHOLDER_DEIDENTIFICATION_STATEMENT_FROM_SOURCE"
+  },
+  "selected_studies": [
+    {
+      "study_instance_uid": "PLACEHOLDER_STUDY_INSTANCE_UID",
+      "collection_name": "PLACEHOLDER_COLLECTION_NAME",
+      "selection_notes": "PLACEHOLDER_STUDY_SELECTION_NOTES",
+      "selected_series": [
+        {
+          "series_instance_uid": "PLACEHOLDER_SERIES_INSTANCE_UID_1",
+          "modality": "PLACEHOLDER_MODALITY",
+          "description": "PLACEHOLDER_SERIES_DESCRIPTION_FROM_SOURCE",
+          "expected_file_count": "PLACEHOLDER_EXPECTED_DICOM_FILE_COUNT"
+        },
+        {
+          "series_instance_uid": "PLACEHOLDER_SERIES_INSTANCE_UID_2",
+          "modality": "PLACEHOLDER_MODALITY",
+          "description": "PLACEHOLDER_SERIES_DESCRIPTION_FROM_SOURCE",
+          "expected_file_count": "PLACEHOLDER_EXPECTED_DICOM_FILE_COUNT"
+        }
+      ]
+    }
+  ],
+  "expected_files": [
+    {
+      "relative_path": "PLACEHOLDER_RELATIVE_PATH_TO_DICOM_FILE",
+      "study_instance_uid": "PLACEHOLDER_STUDY_INSTANCE_UID",
+      "series_instance_uid": "PLACEHOLDER_SERIES_INSTANCE_UID_1",
+      "sop_instance_uid": "PLACEHOLDER_SOP_INSTANCE_UID",
+      "modality": "PLACEHOLDER_MODALITY"
+    }
+  ],
+  "checksums": {
+    "algorithm": "sha256",
+    "checksum_file": "checksums.sha256",
+    "entries": [
+      {
+        "sha256": "PLACEHOLDER_SHA256_WHEN_REAL_FILE_EXISTS",
+        "relative_path": "PLACEHOLDER_RELATIVE_PATH_TO_DICOM_FILE"
+      }
+    ]
+  },
+  "ingestion_expectations": {
+    "raw_dicom_stored_in_git": false,
+    "contains_synthetic_dicom": false,
+    "contains_patient_records": false,
+    "expected_ingestion_mode": "PLACEHOLDER_REFERENCE_ONLY_NO_INGESTION_LOGIC",
+    "notes": "PLACEHOLDER_FUTURE_TESTS_MAY_USE_THIS_MANIFEST_TO_LOCATE_LOCAL_REAL_DEIDENTIFIED_FILES"
+  }
+}
