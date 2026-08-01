@@ -1,18 +1,39 @@
 # Human-readable template for selected real public deidentified imaging studies.
-# All values are placeholders until a real dataset is selected. Do not replace
-# them with synthetic DICOM metadata or private patient information.
+# Collection-level candidate information is recorded below. Study, series,
+# instance, file path, and checksum values remain placeholders until verified
+# from real source metadata. Do not replace them with synthetic DICOM metadata
+# or private patient information.
 
-manifest_status: PLACEHOLDER_NOT_SELECTED
+manifest_status: CANDIDATE_SELECTED_FOR_REVIEW
 dataset:
-  name: PLACEHOLDER_DATASET_NAME
-  source_url: PLACEHOLDER_PUBLIC_OR_RESEARCH_ACCESS_URL
-  collection_name: PLACEHOLDER_COLLECTION_NAME
-  access_notes: PLACEHOLDER_LICENSE_AND_ACCESS_NOTES
+  name: CT-vs-PET-Ventilation-Imaging
+  collection_name: CT-vs-PET-Ventilation-Imaging
+  source_repositories:
+    - TCIA
+    - IDC
+  doi: 10.7937/3ppx-7s22
+  public_status: public
+  disease_area: lung cancer
+  primary_site: lung
+  species: human
+  modalities:
+    - CT
+    - PT
+    - RWV
+  full_collection_subject_count: 20
+  full_collection_study_count: 22
+  full_collection_series_count: 119
+  full_collection_image_count: 29491
+  full_collection_size: 14.93 GB
+  license: CC BY 4.0
+  collection_status: complete
+  updated_date: 2022-08-25
+  access_notes: Public candidate collection for review only; no DICOM files are downloaded in this step.
 
 selected_studies:
   - study_uid: PLACEHOLDER_STUDY_INSTANCE_UID
-    collection_name: PLACEHOLDER_COLLECTION_NAME
-    notes: PLACEHOLDER_REASON_THIS_DEIDENTIFIED_STUDY_IS_SUITABLE
+    collection_name: CT-vs-PET-Ventilation-Imaging
+    notes: PLACEHOLDER_REASON_THIS_DEIDENTIFIED_STUDY_IS_SUITABLE_AFTER_METADATA_REVIEW
     selected_series:
       - series_uid: PLACEHOLDER_SERIES_INSTANCE_UID_1
         modality: PLACEHOLDER_MODALITY
@@ -22,7 +43,8 @@ selected_studies:
         notes: PLACEHOLDER_SERIES_SELECTION_NOTES
 
 review_notes:
-  - PLACEHOLDER_CONFIRM_PUBLIC_OR_RESEARCH_ACCESSIBLE
-  - PLACEHOLDER_CONFIRM_DEIDENTIFICATION_STATUS
-  - PLACEHOLDER_CONFIRM_METADATA_AVAILABLE
-  - PLACEHOLDER_CONFIRM_SMALL_TEST_SUBSET
+  - Candidate collection is public and licensed CC BY 4.0.
+  - Full collection is too large for test fixtures and must not be downloaded wholesale.
+  - PLACEHOLDER_CONFIRM_DEIDENTIFICATION_STATUS_FROM_SOURCE_METADATA
+  - PLACEHOLDER_CONFIRM_METADATA_AVAILABLE_FOR_TINY_SUBSET
+  - PLACEHOLDER_SELECT_SMALL_TEST_SUBSET_AFTER_METADATA_QUERY
