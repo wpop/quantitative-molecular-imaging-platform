@@ -48,3 +48,12 @@ checksums and DICOM headers for the selected CT and PT series under
 
 Validation reads metadata only and does not analyze pixel data. It requires the
 optional local DICOM files to exist outside Git under `datasets/raw/`.
+
+## Local Metadata Ingestion
+
+Validated local DICOM metadata can be ingested into the Django domain models
+with `scripts/ingest_local_dicom_metadata.py`. The ingestion reads DICOM
+headers only and does not read pixel arrays.
+
+Raw DICOM files remain outside Git under `datasets/raw/`. The ingestion is
+idempotent for `ImagingStudy`, `ImagingSeries`, and `ImagingInstance` records.
