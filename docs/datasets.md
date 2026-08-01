@@ -50,6 +50,15 @@ stored in Git or required by CI.
 Future CI should use metadata-only checks or optional local-data tests. Full
 dataset download remains forbidden for tests.
 
+## Step 6 Local DICOM Validation
+
+Step 6 validates the optional local selected DICOM subset without downloading
+data. It checks SHA-256 checksums, `StudyInstanceUID`, `SeriesInstanceUID`,
+`Modality`, and expected file counts for the selected CT and PT series.
+
+This validation reads DICOM headers only. It does not perform image analysis or
+load pixel arrays.
+
 ## Selection Criteria
 
 A candidate dataset should meet all of the following criteria:
