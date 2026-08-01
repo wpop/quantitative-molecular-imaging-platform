@@ -1,27 +1,57 @@
 {
   "manifest_version": "PLACEHOLDER_MANIFEST_VERSION",
-  "manifest_status": "PLACEHOLDER_NOT_SELECTED",
+  "manifest_status": "CANDIDATE_SELECTED_FOR_REVIEW",
   "dataset_identity": {
-    "dataset_name": "PLACEHOLDER_DATASET_NAME",
-    "collection_name": "PLACEHOLDER_COLLECTION_NAME",
+    "dataset_name": "CT-vs-PET-Ventilation-Imaging",
+    "collection_name": "CT-vs-PET-Ventilation-Imaging",
     "dataset_version": "PLACEHOLDER_DATASET_VERSION_OR_RELEASE",
+    "collection_status": "complete",
+    "updated_date": "2022-08-25",
     "selection_date": "PLACEHOLDER_YYYY-MM-DD"
   },
   "source": {
-    "source_url": "PLACEHOLDER_PUBLIC_OR_RESEARCH_ACCESS_URL",
-    "download_instructions": "PLACEHOLDER_EXTERNAL_DOWNLOAD_INSTRUCTIONS_NO_DATA_IN_GIT",
+    "repositories": [
+      {
+        "name": "The Cancer Imaging Archive",
+        "abbreviation": "TCIA",
+        "source_url": "PLACEHOLDER_TCIA_COLLECTION_URL"
+      },
+      {
+        "name": "Imaging Data Commons",
+        "abbreviation": "IDC",
+        "source_url": "PLACEHOLDER_IDC_COLLECTION_URL"
+      }
+    ],
+    "doi": "10.7937/3ppx-7s22",
+    "download_instructions": "No files are downloaded in this step. Future data access must use documented external source workflows and keep raw DICOM files outside Git.",
     "source_record_id": "PLACEHOLDER_SOURCE_RECORD_OR_COLLECTION_ID"
   },
   "license_access_notes": {
-    "license": "PLACEHOLDER_LICENSE_OR_DATA_USE_TERMS",
-    "access_requirements": "PLACEHOLDER_PUBLIC_OR_RESEARCH_ACCESS_REQUIREMENTS",
+    "license": "CC BY 4.0",
+    "public_status": "public",
+    "access_requirements": "Public collection; confirm repository-specific access and citation requirements before downloading any files.",
     "deidentification_notes": "PLACEHOLDER_DEIDENTIFICATION_STATEMENT_FROM_SOURCE"
+  },
+  "collection_summary": {
+    "disease_area": "lung cancer",
+    "primary_site": "lung",
+    "species": "human",
+    "modalities": [
+      "CT",
+      "PT",
+      "RWV"
+    ],
+    "full_collection_subject_count": 20,
+    "full_collection_study_count": 22,
+    "full_collection_series_count": 119,
+    "full_collection_image_count": 29491,
+    "full_collection_size": "14.93 GB"
   },
   "selected_studies": [
     {
       "study_instance_uid": "PLACEHOLDER_STUDY_INSTANCE_UID",
-      "collection_name": "PLACEHOLDER_COLLECTION_NAME",
-      "selection_notes": "PLACEHOLDER_STUDY_SELECTION_NOTES",
+      "collection_name": "CT-vs-PET-Ventilation-Imaging",
+      "selection_notes": "PLACEHOLDER_STUDY_SELECTION_NOTES_AFTER_METADATA_REVIEW",
       "selected_series": [
         {
           "series_instance_uid": "PLACEHOLDER_SERIES_INSTANCE_UID_1",
@@ -61,7 +91,8 @@
     "raw_dicom_stored_in_git": false,
     "contains_synthetic_dicom": false,
     "contains_patient_records": false,
+    "files_downloaded_in_this_step": 0,
     "expected_ingestion_mode": "PLACEHOLDER_REFERENCE_ONLY_NO_INGESTION_LOGIC",
-    "notes": "PLACEHOLDER_FUTURE_TESTS_MAY_USE_THIS_MANIFEST_TO_LOCATE_LOCAL_REAL_DEIDENTIFIED_FILES"
+    "notes": "Study, series, instance, file path, and checksum values remain placeholders until verified from real source metadata."
   }
 }
