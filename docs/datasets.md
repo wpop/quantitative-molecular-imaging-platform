@@ -73,6 +73,12 @@ Step 8 exposes ingested PostgreSQL metadata through read-only REST API
 endpoints. The API is metadata-only: it does not read raw DICOM files, does not
 read pixel data, and does not expose pixel data.
 
+## Step 9 Metadata Overview Endpoint
+
+Step 9 adds a read-only overview endpoint that summarizes already ingested
+PostgreSQL metadata for future dashboard use. The endpoint does not read DICOM
+files and does not expose pixel data.
+
 ## Selection Criteria
 
 A candidate dataset should meet all of the following criteria:
