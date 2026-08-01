@@ -23,9 +23,22 @@ The full collection contains 20 subjects, 22 studies, 119 series, and 29,491
 DICOM images/files. Its full size is 14.93 GB, so the project will not download
 the full collection for tests.
 
-Only collection-level candidate information is recorded at this stage. Study,
-series, instance, file-path, and checksum fields remain placeholders until they
-are verified from real source metadata.
+Collection-level candidate information and a metadata-only tiny subset are
+recorded at this stage. Raw DICOM image data, SOP instance lists, local file
+paths, and checksums remain absent or placeholders until a later verification
+step.
+
+## Step 4 Metadata Query
+
+Step 4 queries metadata only. The project uses public TCIA/NBIA metadata APIs
+first to inspect patient, study, series, and series-size records for the
+candidate collection. This step does not call image download endpoints and does
+not download DICOM files.
+
+The metadata query is used to select only a tiny real subset for later review:
+one subject, one study, and one or two series. Full dataset download is not
+allowed for tests. Exact DICOM file counts for the selected subset are known
+only after source metadata is queried.
 
 ## Selection Criteria
 
@@ -52,6 +65,6 @@ A candidate dataset should meet all of the following criteria:
 7. Store SHA-256 checksums in `backend/tests/real_data/checksums.sha256` only
    after real files have been downloaded outside Git.
 
-The next future step is to query source metadata and choose a tiny subset, for
-example 1 subject, 1 study, and 1-2 series. Exact file counts for that subset
-will be known only after the source metadata is queried.
+After metadata query, the next future step is to review the tiny subset and
+decide whether any raw DICOM files should be downloaded outside Git for a
+separate validation fixture.

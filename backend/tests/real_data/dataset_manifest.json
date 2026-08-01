@@ -49,21 +49,28 @@
   },
   "selected_studies": [
     {
-      "study_instance_uid": "PLACEHOLDER_STUDY_INSTANCE_UID",
+      "subject_id": "CT-PET-VI-01",
+      "study_instance_uid": "1.3.6.1.4.1.14519.5.2.1.297577087050970310787702792940607009472",
       "collection_name": "CT-vs-PET-Ventilation-Imaging",
-      "selection_notes": "PLACEHOLDER_STUDY_SELECTION_NOTES_AFTER_METADATA_REVIEW",
+      "study_description": "RT^RT_RespLowBreathRateRNS (Adult)",
+      "study_date": "1996-04-30 00:00:00.0",
+      "selection_notes": "Metadata-only TCIA/NBIA query selected this deterministic first suitable study for tiny subset review.",
       "selected_series": [
         {
-          "series_instance_uid": "PLACEHOLDER_SERIES_INSTANCE_UID_1",
-          "modality": "PLACEHOLDER_MODALITY",
-          "description": "PLACEHOLDER_SERIES_DESCRIPTION_FROM_SOURCE",
-          "expected_file_count": "PLACEHOLDER_EXPECTED_DICOM_FILE_COUNT"
+          "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254",
+          "modality": "CT",
+          "description": "RespLow  2.0  B30s  80 % Ex - 100 % In",
+          "body_part_examined": "CHEST",
+          "expected_file_count": 990,
+          "total_size_bytes": 522654776
         },
         {
-          "series_instance_uid": "PLACEHOLDER_SERIES_INSTANCE_UID_2",
-          "modality": "PLACEHOLDER_MODALITY",
-          "description": "PLACEHOLDER_SERIES_DESCRIPTION_FROM_SOURCE",
-          "expected_file_count": "PLACEHOLDER_EXPECTED_DICOM_FILE_COUNT"
+          "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533",
+          "modality": "PT",
+          "description": "Galligas Lung",
+          "body_part_examined": "PLACEHOLDER_NOT_RETURNED",
+          "expected_file_count": 159,
+          "total_size_bytes": 51521232
         }
       ]
     }
@@ -71,10 +78,10 @@
   "expected_files": [
     {
       "relative_path": "PLACEHOLDER_RELATIVE_PATH_TO_DICOM_FILE",
-      "study_instance_uid": "PLACEHOLDER_STUDY_INSTANCE_UID",
-      "series_instance_uid": "PLACEHOLDER_SERIES_INSTANCE_UID_1",
+      "study_instance_uid": "1.3.6.1.4.1.14519.5.2.1.297577087050970310787702792940607009472",
+      "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254",
       "sop_instance_uid": "PLACEHOLDER_SOP_INSTANCE_UID",
-      "modality": "PLACEHOLDER_MODALITY"
+      "modality": "CT"
     }
   ],
   "checksums": {
@@ -93,6 +100,6 @@
     "contains_patient_records": false,
     "files_downloaded_in_this_step": 0,
     "expected_ingestion_mode": "PLACEHOLDER_REFERENCE_ONLY_NO_INGESTION_LOGIC",
-    "notes": "Study, series, instance, file path, and checksum values remain placeholders until verified from real source metadata."
+    "notes": "Study and series metadata were queried from TCIA/NBIA without downloading DICOM files. SOPInstanceUID, local file path, and checksum values remain placeholders until a future metadata or file verification step."
   }
 }

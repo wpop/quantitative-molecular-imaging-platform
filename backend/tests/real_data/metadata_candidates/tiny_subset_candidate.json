@@ -1,0 +1,61 @@
+{
+  "collection": "CT-vs-PET-Ventilation-Imaging",
+  "dicom_files_downloaded": 0,
+  "metadata_only": true,
+  "notes": "This file contains real public metadata only. It does not contain DICOM pixel data, local DICOM file paths, SOPInstanceUID lists, or checksums.",
+  "selection_policy": "Deterministic first suitable subject and study, preferring CT and PT series when both are available from metadata.",
+  "series": [
+    {
+      "body_part_examined": "CHEST",
+      "manufacturer": "SIEMENS",
+      "manufacturer_model_name": "Biograph64",
+      "modality": "CT",
+      "series_description": "RespLow  2.0  B30s  80 % Ex - 100 % In",
+      "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254"
+    },
+    {
+      "body_part_examined": "PLACEHOLDER_NOT_RETURNED",
+      "manufacturer": "SIEMENS",
+      "manufacturer_model_name": "Biograph64_mCT",
+      "modality": "PT",
+      "series_description": "Galligas Lung",
+      "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533"
+    }
+  ],
+  "series_sizes": [
+    {
+      "object_count": 990,
+      "raw_response": [
+        {
+          "ObjectCount": 990,
+          "TotalSizeInBytes": 522654776
+        }
+      ],
+      "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254",
+      "total_size_bytes": 522654776
+    },
+    {
+      "object_count": 159,
+      "raw_response": [
+        {
+          "ObjectCount": 159,
+          "TotalSizeInBytes": 51521232
+        }
+      ],
+      "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533",
+      "total_size_bytes": 51521232
+    }
+  ],
+  "study": {
+    "series_count": 6,
+    "study_date": "1996-04-30 00:00:00.0",
+    "study_description": "RT^RT_RespLowBreathRateRNS (Adult)",
+    "study_instance_uid": "1.3.6.1.4.1.14519.5.2.1.297577087050970310787702792940607009472"
+  },
+  "subject": {
+    "collection": "CT-vs-PET-Ventilation-Imaging",
+    "patient_id": "CT-PET-VI-01",
+    "patient_sex": "F",
+    "species_description": "Homo sapiens"
+  }
+}
