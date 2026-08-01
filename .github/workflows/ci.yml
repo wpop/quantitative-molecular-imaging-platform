@@ -1,0 +1,60 @@
+name: Backend Quality
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend-quality:
+    name: Backend quality checks
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Run Django development check
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.development
+          DJANGO_SECRET_KEY: unsafe-ci-development-secret-key
+          POSTGRES_DB: qmip
+          POSTGRES_USER: qmip
+          POSTGRES_PASSWORD: qmip_dev_password
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: "5432"
+        run: python manage.py check --settings=config.settings.development
+
+      - name: Run Django test settings check
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+          DJANGO_SECRET_KEY: unsafe-ci-test-secret-key
+          POSTGRES_DB: qmip
+          POSTGRES_USER: qmip
+          POSTGRES_PASSWORD: qmip_dev_password
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: "5432"
+        run: python manage.py check --settings=config.settings.test
+
+      - name: Run Ruff
+        run: ruff check .
+
+      - name: Run mypy
+        run: mypy .
