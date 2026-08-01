@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import TypedDict
 
 import pytest
 from django.utils import timezone
 from rest_framework.test import APIClient
 
+from apps.analysis.models import AnalysisRun, MeasurementResult
 from apps.imaging.models import ImagingInstance, ImagingSeries, ImagingStudy
 from apps.ingestion.models import IngestionJob, IngestionJobEvent
 
@@ -18,6 +20,8 @@ class MetadataObjects(TypedDict):
     instance: ImagingInstance
     job: IngestionJob
     event: IngestionJobEvent
+    analysis_run: AnalysisRun
+    measurement_result: MeasurementResult
 
 
 @pytest.fixture
@@ -64,12 +68,35 @@ def metadata_objects() -> MetadataObjects:
         message="Test event",
         context={"records": 1},
     )
+    analysis_run = AnalysisRun.objects.create(
+        study=study,
+        status=AnalysisRun.Status.COMPLETED,
+        name="Metadata API test analysis",
+        algorithm_name="series_geometry_summary",
+        algorithm_version="0.1.0",
+        parameters={"metadata_only": True},
+        started_at=timezone.now(),
+        completed_at=timezone.now(),
+    )
+    measurement_result = MeasurementResult.objects.create(
+        analysis_run=analysis_run,
+        name="approximate_in_plane_width",
+        value=Decimal("512.00000000"),
+        unit="mm",
+        region_label=series.series_instance_uid,
+        metadata={
+            "modality": "CT",
+            "series_instance_uid": series.series_instance_uid,
+        },
+    )
     return {
         "study": study,
         "series": series,
         "instance": instance,
         "job": job,
         "event": event,
+        "analysis_run": analysis_run,
+        "measurement_result": measurement_result,
     }
 
 
@@ -81,6 +108,8 @@ def metadata_objects() -> MetadataObjects:
         "/api/v1/imaging/series/",
         "/api/v1/imaging/instances/",
         "/api/v1/ingestion/jobs/",
+        "/api/v1/analysis/runs/",
+        "/api/v1/analysis/results/",
         "/api/v1/overview/",
     ],
 )
@@ -140,6 +169,23 @@ def test_retrieve_endpoint_returns_200(
 
 
 @pytest.mark.django_db
+def test_analysis_retrieve_endpoints_return_200(
+    api_client: APIClient,
+    metadata_objects: MetadataObjects,
+) -> None:
+    analysis_run = metadata_objects["analysis_run"]
+    measurement_result = metadata_objects["measurement_result"]
+
+    run_response = api_client.get(f"/api/v1/analysis/runs/{analysis_run.id}/")
+    result_response = api_client.get(f"/api/v1/analysis/results/{measurement_result.id}/")
+
+    assert run_response.status_code == 200
+    assert run_response.json()["study_instance_uid"] == analysis_run.study.study_instance_uid
+    assert result_response.status_code == 200
+    assert result_response.json()["algorithm_name"] == analysis_run.algorithm_name
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize(
     ("method", "path"),
     [
@@ -165,6 +211,39 @@ def test_write_methods_are_not_allowed(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("method", "path"),
+    [
+        ("post", "/api/v1/analysis/runs/"),
+        ("put", "/api/v1/analysis/runs/{analysis_run_id}/"),
+        ("patch", "/api/v1/analysis/runs/{analysis_run_id}/"),
+        ("delete", "/api/v1/analysis/runs/{analysis_run_id}/"),
+        ("post", "/api/v1/analysis/results/"),
+        ("put", "/api/v1/analysis/results/{measurement_result_id}/"),
+        ("patch", "/api/v1/analysis/results/{measurement_result_id}/"),
+        ("delete", "/api/v1/analysis/results/{measurement_result_id}/"),
+    ],
+)
+def test_analysis_write_methods_are_not_allowed(
+    api_client: APIClient,
+    metadata_objects: MetadataObjects,
+    method: str,
+    path: str,
+) -> None:
+    analysis_run = metadata_objects["analysis_run"]
+    measurement_result = metadata_objects["measurement_result"]
+    resolved_path = path.format(
+        analysis_run_id=analysis_run.id,
+        measurement_result_id=measurement_result.id,
+    )
+    request = getattr(api_client, method)
+
+    response = request(resolved_path, data={})
+
+    assert response.status_code == 405
+
+
+@pytest.mark.django_db
 def test_manual_filters_are_applied(
     api_client: APIClient,
     metadata_objects: MetadataObjects,
@@ -181,3 +260,38 @@ def test_manual_filters_are_applied(
 
     assert response.status_code == 200
     assert len(response.json()) == 1
+
+
+@pytest.mark.django_db
+def test_analysis_manual_filters_are_applied(
+    api_client: APIClient,
+    metadata_objects: MetadataObjects,
+) -> None:
+    study = metadata_objects["study"]
+
+    run_response = api_client.get(
+        "/api/v1/analysis/runs/",
+        {
+            "status": AnalysisRun.Status.COMPLETED,
+            "algorithm_name": "series_geometry_summary",
+            "algorithm_version": "0.1.0",
+            "study_instance_uid": study.study_instance_uid,
+        },
+    )
+    result_response = api_client.get(
+        "/api/v1/analysis/results/",
+        {
+            "status": AnalysisRun.Status.COMPLETED,
+            "algorithm_name": "series_geometry_summary",
+            "algorithm_version": "0.1.0",
+            "study_instance_uid": study.study_instance_uid,
+            "name": "approximate_in_plane_width",
+            "unit": "mm",
+            "modality": "CT",
+        },
+    )
+
+    assert run_response.status_code == 200
+    assert len(run_response.json()) == 1
+    assert result_response.status_code == 200
+    assert len(result_response.json()) == 1

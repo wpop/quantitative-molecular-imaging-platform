@@ -88,6 +88,12 @@ Step 11 computes a minimal quantitative geometry summary from already ingested
 PostgreSQL metadata. It does not read DICOM files, does not read pixel data,
 and stores the results as analysis metadata.
 
+## Step 12 Analysis Results API
+
+Step 12 exposes stored quantitative analysis metadata through read-only REST
+API endpoints. The API does not run analysis, does not read DICOM files, and
+does not expose pixel data.
+
 ## Selection Criteria
 
 A candidate dataset should meet all of the following criteria:
