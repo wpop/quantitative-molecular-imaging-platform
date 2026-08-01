@@ -29,6 +29,8 @@ http://localhost:8000/api/v1/
 - `GET /api/v1/imaging/instances/`
 - `GET /api/v1/ingestion/jobs/`
 - `GET /api/v1/ingestion/events/`
+- `GET /api/v1/analysis/runs/`
+- `GET /api/v1/analysis/results/`
 
 Write methods such as `POST`, `PUT`, `PATCH`, and `DELETE` are not supported
 for these metadata endpoints.
@@ -99,3 +101,34 @@ curl "http://localhost:8000/api/v1/ingestion/events/?level=info"
 
 The ingestion API exposes job and event metadata only. It does not expose raw
 file contents or local raw DICOM paths.
+
+## Analysis Metadata
+
+```sh
+curl http://localhost:8000/api/v1/analysis/runs/
+curl http://localhost:8000/api/v1/analysis/results/
+```
+
+Useful query parameters:
+
+```sh
+curl "http://localhost:8000/api/v1/analysis/runs/?status=completed"
+curl "http://localhost:8000/api/v1/analysis/runs/?algorithm_name=series_geometry_summary"
+curl "http://localhost:8000/api/v1/analysis/runs/?study_instance_uid=1.3.6.1.4.1.14519.5.2.1.297577087050970310787702792940607009472"
+curl "http://localhost:8000/api/v1/analysis/results/?name=approximate_in_plane_width"
+curl "http://localhost:8000/api/v1/analysis/results/?unit=mm"
+curl "http://localhost:8000/api/v1/analysis/results/?modality=CT"
+```
+
+Supported analysis filters:
+
+- `status`
+- `algorithm_name`
+- `algorithm_version`
+- `study_instance_uid`
+- `name`
+- `unit`
+- `modality`
+
+The analysis API exposes stored quantitative metadata only. It does not run
+analysis, read DICOM files, or expose pixel data.

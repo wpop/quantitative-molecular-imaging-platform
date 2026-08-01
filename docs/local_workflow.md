@@ -118,6 +118,13 @@ POSTGRES_PASSWORD=qmip_dev_password python scripts/run_series_geometry_summary.p
 This command reads PostgreSQL metadata only. It does not read DICOM files or
 pixel arrays.
 
+Stored analysis runs and measurement results are available through:
+
+```text
+http://localhost:8000/api/v1/analysis/runs/
+http://localhost:8000/api/v1/analysis/results/
+```
+
 ## Tests And Quality Checks
 
 Run tests from the repository root:
