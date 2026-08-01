@@ -1,0 +1,46 @@
+{
+  "checks": {
+    "all_listed_files_exist": true,
+    "checksums_match": true,
+    "dicom_headers_read_without_pixel_data": true,
+    "dicom_preamble_present": true,
+    "expected_counts_match": true,
+    "modality_matches_selected_series": true,
+    "series_instance_uid_matches_selected_subset": true,
+    "study_instance_uid_matches": true
+  },
+  "checksum_entries_validated": 1149,
+  "checksum_file": "backend/tests/real_data/checksums.sha256",
+  "collection": "CT-vs-PET-Ventilation-Imaging",
+  "image_analysis_performed": false,
+  "local_only": true,
+  "modality_counts": {
+    "CT": 990,
+    "PT": 159
+  },
+  "network_calls_performed": false,
+  "pixel_data_read": false,
+  "raw_subset_directory": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01",
+  "series": [
+    {
+      "expected_files": 990,
+      "first_file": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01/CT_1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254/00000001.dcm",
+      "last_file": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01/CT_1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254/00000990.dcm",
+      "modality": "CT",
+      "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254",
+      "validated_files": 990
+    },
+    {
+      "expected_files": 159,
+      "first_file": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01/PT_1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533/00000001.dcm",
+      "last_file": "datasets/raw/tcia/CT-vs-PET-Ventilation-Imaging/CT-PET-VI-01/PT_1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533/00000159.dcm",
+      "modality": "PT",
+      "series_instance_uid": "1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533",
+      "validated_files": 159
+    }
+  ],
+  "study_instance_uid": "1.3.6.1.4.1.14519.5.2.1.297577087050970310787702792940607009472",
+  "subject_id": "CT-PET-VI-01",
+  "summary_status": "passed",
+  "validated_total_files": 1149
+}

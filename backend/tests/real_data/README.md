@@ -38,3 +38,13 @@ Git under `datasets/raw/`.
 The `checksums.sha256` file may contain SHA-256 checksums for the local selected
 subset after that download. The full collection must not be downloaded for
 tests.
+
+## Local DICOM Validation
+
+The optional local subset can be validated with
+`scripts/validate_local_dicom_subset.py`. The validator checks SHA-256
+checksums and DICOM headers for the selected CT and PT series under
+`datasets/raw/`.
+
+Validation reads metadata only and does not analyze pixel data. It requires the
+optional local DICOM files to exist outside Git under `datasets/raw/`.
