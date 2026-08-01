@@ -59,6 +59,14 @@ data. It checks SHA-256 checksums, `StudyInstanceUID`, `SeriesInstanceUID`,
 This validation reads DICOM headers only. It does not perform image analysis or
 load pixel arrays.
 
+## Step 7 Local Metadata Ingestion
+
+Step 7 ingests validated local DICOM headers into PostgreSQL through the Django
+ORM. It does not download data and does not read pixel data.
+
+The expected result for the selected subset is 1 `ImagingStudy`, 2
+`ImagingSeries` records, and 1,149 `ImagingInstance` records.
+
 ## Selection Criteria
 
 A candidate dataset should meet all of the following criteria:
