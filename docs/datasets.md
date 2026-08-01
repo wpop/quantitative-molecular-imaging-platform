@@ -79,6 +79,9 @@ Step 9 adds a read-only overview endpoint that summarizes already ingested
 PostgreSQL metadata for future dashboard use. The endpoint does not read DICOM
 files and does not expose pixel data.
 
+See [local_workflow.md](local_workflow.md) for local setup commands and
+[api_usage.md](api_usage.md) for read-only API examples.
+
 ## Selection Criteria
 
 A candidate dataset should meet all of the following criteria:
