@@ -87,7 +87,11 @@ raw-DICOM or pixel API.
 8. Read-only DRF endpoints expose overview, imaging, ingestion, and analysis
    metadata, including registered visualization artifact metadata. PNG files are
    served through artifact database IDs, not through local paths.
-9. The React dashboard fetches the API responses and displays a compact
+9. A controlled backend endpoint can generate a visualization artifact from a
+   validated request. PostgreSQL selects the series, no filesystem path is
+   accepted from the client, and generated PNG metadata is registered before the
+   artifact metadata response is returned.
+10. The React dashboard fetches the API responses and displays a compact
    metadata summary plus a read-only visualization artifact workbench.
 
 ## Frontend Role
@@ -124,6 +128,11 @@ files, and does not run analysis or artifact generation in the browser.
 - Local visualization paths are not exposed through the public API. API access
   to artifact metadata is read-only and serves PNG files only through artifact
   IDs. The endpoint does not expose DICOM files or NumPy arrays.
+- Visualization generation can be triggered only with validated scientific
+  parameters: `series_instance_uid`, `operation`, optional `slice_index`,
+  `gaussian_sigma`, `window_center`, `window_width`, `lower_percentile`,
+  `upper_percentile`, and `dpi`. The API never accepts a client-provided DICOM,
+  output, or artifact path.
 - The API and frontend expose metadata only.
 - The geometry summary is derived from already ingested metadata.
 - The project is not intended for diagnosis, treatment decisions, or production
@@ -153,4 +162,6 @@ without storing PNG bytes or NumPy arrays. Step 21 adds read-only artifact
 metadata and PNG responses for registered artifacts; operation execution and
 frontend operation controls remain separate future steps. Step 22 displays
 registered artifacts in the React dashboard with read-only filters and PNG
-requests through artifact image URLs.
+requests through artifact image URLs. Step 23 adds a controlled backend
+visualization-generation endpoint that returns registered artifact metadata and
+`image_url`; frontend execution controls remain future work.
