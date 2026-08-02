@@ -263,6 +263,8 @@ npm test
 
 ## Documentation Links
 
+- [Changelog](CHANGELOG.md)
+- [v0.2.0 release notes](docs/releases/v0.2.0.md)
 - [Demo guide](docs/demo.md)
 - [Architecture](docs/architecture.md)
 - [Local workflow](docs/local_workflow.md)
