@@ -195,10 +195,14 @@ The dashboard uses `VITE_API_BASE_URL` when set and defaults to
 - Imaging series metadata.
 - Stored quantitative analysis result metadata.
 - Registered visualization artifacts with read-only filters and PNG image URLs.
+- Controlled visualization generation by PostgreSQL series UID and scientific
+  parameters.
 - A safety note that no DICOM pixels are loaded and no diagnosis is performed.
 
-The frontend does not expose local paths and does not run scientific-operation
-execution; it displays only artifacts that have already been registered.
+The frontend does not expose local paths or accept filesystem paths, DICOM
+paths, image bytes, or arrays. Generated artifacts are registered by the backend
+and displayed after generation. This repository remains non-clinical research
+software.
 
 ## Quality Checks
 

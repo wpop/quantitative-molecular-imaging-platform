@@ -103,6 +103,18 @@ export type VisualizationArtifactFilters = {
   modality?: string;
 };
 
+export type VisualizationGenerationRequest = {
+  series_instance_uid: string;
+  operation: VisualizationArtifactOperation;
+  slice_index?: number;
+  gaussian_sigma?: number;
+  window_center?: number;
+  window_width?: number;
+  lower_percentile?: number;
+  upper_percentile?: number;
+  dpi?: number;
+};
+
 type DashboardData = {
   overview: Overview;
   studies: ImagingStudy[];
@@ -111,17 +123,37 @@ type DashboardData = {
   analysisResults: MeasurementResult[];
 };
 
-async function fetchJson<T>(path: string): Promise<T> {
+function safeErrorMessage(body: string, fallback: string): string {
+  if (!body) {
+    return fallback;
+  }
+  try {
+    const parsed = JSON.parse(body) as { detail?: unknown; non_field_errors?: unknown };
+    if (typeof parsed.detail === "string") {
+      return parsed.detail.includes("/") || parsed.detail.includes("\\") ? fallback : parsed.detail;
+    }
+    if (Array.isArray(parsed.non_field_errors) && typeof parsed.non_field_errors[0] === "string") {
+      const message = parsed.non_field_errors[0];
+      return message.includes("/") || message.includes("\\") ? fallback : message;
+    }
+  } catch {
+    return fallback;
+  }
+  return fallback;
+}
+
+async function fetchJson<T>(path: string, init: RequestInit = {}): Promise<T> {
   const response = await fetch(`${apiBaseUrl}${path}`, {
+    ...init,
     headers: {
       Accept: "application/json",
+      ...init.headers,
     },
   });
 
   if (!response.ok) {
     const body = await response.text();
-    const detail = body ? ` ${body.slice(0, 240)}` : "";
-    throw new Error(`Backend request failed: ${response.status} ${response.statusText}.${detail}`);
+    throw new Error(safeErrorMessage(body, "Backend request failed."));
   }
 
   return (await response.json()) as T;
@@ -142,6 +174,18 @@ export async function fetchVisualizationArtifacts(
   filters: VisualizationArtifactFilters = {},
 ): Promise<VisualizationArtifact[]> {
   return fetchJson<VisualizationArtifact[]>(buildArtifactPath(filters));
+}
+
+export async function generateVisualizationArtifact(
+  request: VisualizationGenerationRequest,
+): Promise<VisualizationArtifact> {
+  return fetchJson<VisualizationArtifact>("/api/v1/analysis/artifacts/generate/", {
+    body: JSON.stringify(request),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
 }
 
 export async function fetchDashboardData(): Promise<DashboardData> {

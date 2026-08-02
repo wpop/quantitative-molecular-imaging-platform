@@ -105,9 +105,13 @@ from a browser-based dashboard and displays:
 - Stored quantitative measurement metadata.
 - Registered visualization artifact metadata with read-only filters.
 - Registered PNG images requested through artifact `image_url` values.
+- Controlled visualization generation by PostgreSQL series UID with supported
+  scientific parameters: operation, optional slice index, Gaussian sigma, CT
+  window center/width, percentile range, and DPI.
 
 It does not load raw DICOM files, does not expose local paths, does not upload
-files, and does not run analysis or artifact generation in the browser.
+files, and does not run analysis or artifact generation in the browser. The
+browser can submit only validated generation parameters to the backend API.
 
 ## Safety Boundaries
 
@@ -164,4 +168,5 @@ frontend operation controls remain separate future steps. Step 22 displays
 registered artifacts in the React dashboard with read-only filters and PNG
 requests through artifact image URLs. Step 23 adds a controlled backend
 visualization-generation endpoint that returns registered artifact metadata and
-`image_url`; frontend execution controls remain future work.
+`image_url`. Step 24 adds frontend controls for that endpoint, refreshes the
+artifact list, and selects the generated artifact for display.
