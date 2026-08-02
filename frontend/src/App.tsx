@@ -8,6 +8,7 @@ import {
   apiBaseUrl,
   fetchDashboardData,
 } from "./api/client";
+import { VisualizationArtifactWorkbench } from "./VisualizationArtifactWorkbench";
 
 type DashboardState =
   | { status: "loading" }
@@ -194,6 +195,7 @@ export function App() {
           results={state.data.analysisResults}
           runs={state.data.analysisRuns}
         />
+        <VisualizationArtifactWorkbench />
         <SafetyNote />
       </>
     );
@@ -207,7 +209,7 @@ export function App() {
           <h1>Quantitative Molecular Imaging Platform</h1>
           <p>
             A compact dashboard for PostgreSQL imaging metadata, ingestion status, and stored
-            quantitative analysis results.
+            quantitative analysis results with registered visualization artifacts.
           </p>
         </div>
         <div className="api-pill">

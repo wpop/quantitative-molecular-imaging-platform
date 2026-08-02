@@ -5,7 +5,7 @@ project for metadata-driven PET/CT imaging workflows. It validates a small
 selected public deidentified TCIA subset locally, ingests DICOM header metadata
 into PostgreSQL, computes a minimal metadata-derived geometry summary, exposes
 read-only Django REST Framework APIs, and displays the results in a small
-React dashboard.
+React dashboard with registered visualization artifacts.
 
 This repository is not clinical software. It must not be used for diagnosis,
 treatment decisions, or production patient care.
@@ -57,9 +57,9 @@ See [docs/architecture.md](docs/architecture.md) for a longer system overview.
 - Ingestion job and event metadata tracking.
 - Metadata-derived series geometry summary stored as analysis metadata.
 - Read-only APIs for overview, imaging metadata, ingestion metadata, analysis
-  runs, and measurement results.
+  runs, measurement results, and registered visualization artifacts.
 - Minimal frontend dashboard for overview counts, imaging series, and analysis
-  results.
+  results, with a read-only visualization artifact workbench.
 - One-command local backend demo pipeline after the optional DICOM subset is
   already present locally.
 
@@ -162,6 +162,8 @@ Read-only metadata endpoints:
 - `GET /api/v1/ingestion/events/`
 - `GET /api/v1/analysis/runs/`
 - `GET /api/v1/analysis/results/`
+- `GET /api/v1/analysis/artifacts/`
+- `GET /api/v1/analysis/artifacts/{id}/image/`
 
 The API does not provide create, update, delete, upload, SQL explorer, or
 query-builder endpoints. See [docs/api_usage.md](docs/api_usage.md) for curl
@@ -184,7 +186,11 @@ The dashboard uses `VITE_API_BASE_URL` when set and defaults to
 - Modalities and latest ingestion status.
 - Imaging series metadata.
 - Stored quantitative analysis result metadata.
+- Registered visualization artifacts with read-only filters and PNG image URLs.
 - A safety note that no DICOM pixels are loaded and no diagnosis is performed.
+
+The frontend does not expose local paths and does not run scientific-operation
+execution; it displays only artifacts that have already been registered.
 
 ## Quality Checks
 
@@ -208,6 +214,7 @@ Run frontend checks from `frontend/`:
 ```sh
 npm run build
 npm run typecheck
+npm test
 ```
 
 ## Repository Structure
