@@ -351,8 +351,32 @@ def create_event(job: Any, message: str, context: dict[str, Any] | None = None) 
     )
 
 
+def register_local_dicom_file(
+    instance: Any,
+    file_path: Path,
+    file_sha256: str,
+    repo_root: Path | None = None,
+) -> Any:
+    """Create or update the local file registry row for one imaging instance."""
+
+    from apps.imaging.models import LocalDicomFile
+
+    root = (repo_root or Path.cwd()).resolve()
+    relative_path = file_path.resolve().relative_to(root).as_posix()
+    local_file, _ = LocalDicomFile.objects.update_or_create(
+        instance=instance,
+        defaults={
+            "relative_path": relative_path,
+            "file_sha256": file_sha256,
+            "file_size_bytes": file_path.stat().st_size,
+            "is_available": True,
+        },
+    )
+    return local_file
+
+
 def ingest_instances(args: argparse.Namespace, instances: list[InstanceMetadata]) -> dict[str, Any]:
-    from apps.imaging.models import ImagingInstance, ImagingSeries, ImagingStudy
+    from apps.imaging.models import ImagingInstance, ImagingSeries, ImagingStudy, LocalDicomFile
     from apps.ingestion.models import IngestionJob
 
     study_metadata = first_metadata(instances)
@@ -407,7 +431,7 @@ def ingest_instances(args: argparse.Namespace, instances: list[InstanceMetadata]
             series_models[expected_series.series_instance_uid] = series_model
 
         for metadata in instances:
-            ImagingInstance.objects.update_or_create(
+            instance_model, _ = ImagingInstance.objects.update_or_create(
                 sop_instance_uid=metadata.sop_instance_uid,
                 defaults={
                     "series": series_models[metadata.series_instance_uid],
@@ -419,6 +443,11 @@ def ingest_instances(args: argparse.Namespace, instances: list[InstanceMetadata]
                     "orthanc_instance_id": "",
                 },
             )
+            register_local_dicom_file(
+                instance=instance_model,
+                file_path=metadata.file_path,
+                file_sha256=metadata.file_sha256,
+            )
 
         db_study_count = ImagingStudy.objects.filter(study_instance_uid=STUDY_INSTANCE_UID).count()
         db_series_count = ImagingSeries.objects.filter(
@@ -427,16 +456,38 @@ def ingest_instances(args: argparse.Namespace, instances: list[InstanceMetadata]
         db_instance_count = ImagingInstance.objects.filter(
             series__series_instance_uid__in=[series.series_instance_uid for series in EXPECTED_SERIES]
         ).count()
+        db_local_file_count = LocalDicomFile.objects.filter(
+            instance__series__series_instance_uid__in=[
+                series.series_instance_uid for series in EXPECTED_SERIES
+            ]
+        ).count()
+        db_available_file_count = LocalDicomFile.objects.filter(
+            instance__series__series_instance_uid__in=[
+                series.series_instance_uid for series in EXPECTED_SERIES
+            ],
+            is_available=True,
+        ).count()
         if db_study_count != 1 or db_series_count != 2 or db_instance_count != EXPECTED_TOTAL_FILES:
             raise RuntimeError(
                 "Database validation failed after ingestion: "
                 f"{db_study_count} studies, {db_series_count} series, {db_instance_count} instances."
             )
+        if db_local_file_count != EXPECTED_TOTAL_FILES or db_available_file_count != EXPECTED_TOTAL_FILES:
+            raise RuntimeError(
+                "Local file registry validation failed after ingestion: "
+                f"{db_local_file_count} registered, {db_available_file_count} available."
+            )
 
         create_event(
             job,
             "Ingested local DICOM metadata summary.",
-            {"studies": db_study_count, "series": db_series_count, "instances": db_instance_count},
+            {
+                "studies": db_study_count,
+                "series": db_series_count,
+                "instances": db_instance_count,
+                "local_dicom_files": db_local_file_count,
+                "available_local_dicom_files": db_available_file_count,
+            },
         )
         job.status = IngestionJob.Status.COMPLETED
         job.completed_at = timezone.now()
@@ -459,6 +510,8 @@ def ingest_instances(args: argparse.Namespace, instances: list[InstanceMetadata]
         "studies_registered": db_study_count,
         "series_registered": db_series_count,
         "instances_registered": db_instance_count,
+        "local_dicom_files_registered": db_local_file_count,
+        "local_dicom_files_available": db_available_file_count,
         "series": [
             {
                 "modality": series.modality,
@@ -515,6 +568,8 @@ def main() -> int:
     print(f"Studies registered: {summary['studies_registered']}")
     print(f"Series registered: {summary['series_registered']}")
     print(f"Instances registered: {summary['instances_registered']}")
+    print(f"Local DICOM files registered: {summary['local_dicom_files_registered']}")
+    print(f"Local DICOM files available: {summary['local_dicom_files_available']}")
     print(f"Ingestion job id: {summary['ingestion_job_id']}")
     return 0
 

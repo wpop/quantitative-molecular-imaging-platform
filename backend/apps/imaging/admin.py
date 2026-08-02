@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 
-from .models import ImagingInstance, ImagingSeries, ImagingStudy
+from .models import ImagingInstance, ImagingSeries, ImagingStudy, LocalDicomFile
 
 
 @admin.register(ImagingStudy)
@@ -60,4 +60,26 @@ class ImagingInstanceAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
         "file_sha256",
         "orthanc_instance_id",
         "series__series_instance_uid",
+    )
+
+
+@admin.register(LocalDicomFile)
+class LocalDicomFileAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
+    list_display = (
+        "id",
+        "instance",
+        "relative_path",
+        "file_size_bytes",
+        "is_available",
+        "updated_at",
+    )
+    search_fields = (
+        "instance__sop_instance_uid",
+        "relative_path",
+        "file_sha256",
+    )
+    list_filter = (
+        "is_available",
+        "created_at",
+        "updated_at",
     )

@@ -1,5 +1,8 @@
 """Domain models for deidentified imaging metadata."""
 
+from pathlib import Path
+
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -96,3 +99,35 @@ class ImagingInstance(models.Model):
         if self.instance_number is None:
             return self.sop_instance_uid
         return f"Instance {self.instance_number}: {self.sop_instance_uid}"
+
+
+class LocalDicomFile(models.Model):
+    """Map one ingested DICOM instance to one local repository-relative file."""
+
+    instance = models.OneToOneField(
+        ImagingInstance,
+        related_name="local_file",
+        on_delete=models.CASCADE,
+    )
+    relative_path = models.CharField(max_length=512)
+    file_sha256 = models.CharField(max_length=64, db_index=True)
+    file_size_bytes = models.PositiveBigIntegerField()
+    is_available = models.BooleanField(default=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("relative_path",)
+
+    def __str__(self) -> str:
+        return f"{self.instance.sop_instance_uid}: {self.relative_path}"
+
+    def clean(self) -> None:
+        super().clean()
+        relative_path = Path(self.relative_path)
+        if relative_path.is_absolute():
+            raise ValidationError({"relative_path": "Local DICOM file paths must be relative."})
+        if ".." in relative_path.parts:
+            raise ValidationError(
+                {"relative_path": "Local DICOM file paths must not contain parent traversal."}
+            )

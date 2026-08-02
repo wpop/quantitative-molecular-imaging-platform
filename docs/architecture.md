@@ -27,6 +27,8 @@ models, API endpoints, and frontend dashboard.
 ## Backend Components
 
 - `apps.imaging` stores study, series, and instance metadata.
+- `apps.imaging.LocalDicomFile` maps one ingested `ImagingInstance` to one
+  repository-relative local DICOM file.
 - `apps.ingestion` stores ingestion job and event metadata.
 - `apps.analysis` stores analysis runs and measurement results.
 - `config.urls` exposes read-only API routes under `/api/v1/`.
@@ -35,6 +37,7 @@ models, API endpoints, and frontend dashboard.
 
 The backend API reads PostgreSQL metadata only. It does not read raw DICOM
 files, does not expose DICOM pixel data, and does not perform image diagnosis.
+Local DICOM registry paths are not exposed through the public metadata API.
 
 ## Data Flow
 
@@ -43,7 +46,8 @@ files, does not expose DICOM pixel data, and does not perform image diagnosis.
 2. `scripts/validate_local_dicom_subset.py` verifies checksums and DICOM
    headers without reading pixel arrays.
 3. `scripts/ingest_local_dicom_metadata.py` reads DICOM headers with
-   `pydicom stop_before_pixels=True` and upserts imaging metadata.
+   `pydicom stop_before_pixels=True`, upserts imaging metadata, and creates
+   `LocalDicomFile` records for repository-relative local file access.
 4. `scripts/run_series_geometry_summary.py` reads PostgreSQL metadata and
    creates a minimal geometry summary as analysis metadata.
 5. Read-only DRF endpoints expose overview, imaging, ingestion, and analysis
@@ -67,6 +71,9 @@ files, and does not run analysis in the browser.
 ## Safety Boundaries
 
 - Raw DICOM files are ignored by Git and remain local-only.
+- Local DICOM registry records store repository-relative paths only. Absolute
+  paths are rejected.
+- Local file paths are not exposed through the public metadata API.
 - No fake patient records or synthetic DICOM files are created.
 - No pixel arrays are read by ingestion or validation scripts.
 - The API and frontend expose metadata only.
@@ -84,3 +91,11 @@ files, and does not run analysis in the browser.
 - Image analysis algorithms.
 - Large dataset processing.
 - CI workflows that require local raw DICOM data.
+
+## Future Scientific Operations
+
+The `LocalDicomFile` registry is the bridge for later scientific operations:
+PostgreSQL can select specific real DICOM instances, then optional local-only
+workers can resolve the repository-relative paths, load pixel data explicitly,
+and run NumPy/SciPy operations. That pixel-loading workflow is intentionally not
+implemented in v0.1.
