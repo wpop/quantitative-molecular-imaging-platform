@@ -127,8 +127,30 @@ POSTGRES_PASSWORD=qmip_dev_password python scripts/load_dicom_pixels_from_db.py 
 ```
 
 This step does not download data, does not call external services, does not run
-SciPy operations, and does not generate PNG visualizations. NumPy/SciPy
-operations and visualization will be implemented in later steps.
+SciPy operations, and does not generate PNG visualizations.
+
+## Local DB-Selected Scientific Operation
+
+After the selected DICOM metadata has been ingested, run one private scientific
+operation on a PostgreSQL-selected DICOM instance:
+
+```sh
+POSTGRES_PASSWORD=qmip_dev_password python scripts/run_dicom_scientific_operation.py \
+  --series-instance-uid 1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254 \
+  --operation gaussian \
+  --gaussian-sigma 1.0
+```
+
+The command uses `LocalDicomFile` to load raw pixels for the selected local
+DICOM file, applies `RescaleSlope` and `RescaleIntercept`, and then optionally
+runs a SciPy operation. CT rescaled values are Hounsfield Units (`HU`). PT
+values are reported only as `rescaled_pixel_value`, not SUV. Gaussian filtering
+uses `scipy.ndimage.gaussian_filter`. Sobel uses `scipy.ndimage.sobel` on both
+axes and reports gradient magnitude units rather than original intensity units.
+
+The scientific result array remains a private local process result. It is not
+written to PostgreSQL, not exposed through public APIs, not saved to disk, and
+no visualization artifact is generated in Step 18.
 
 ## One-Command Local Backend Demo
 
