@@ -172,8 +172,18 @@ locally and registered in PostgreSQL. `VisualizationArtifact` links the
 repository-relative PNG path, checksum, file size, display settings, operation,
 modality, and units to the source `ImagingInstance`. PNG bytes and NumPy arrays
 are not stored in PostgreSQL, and local paths are not exposed through the public
-API. API access to artifact metadata will be implemented in a later step. Step
-19 and Step 20 add no public API or frontend changes.
+API. Step 21 exposes registered artifact metadata through read-only REST
+endpoints and serves PNG files through artifact IDs:
+
+```text
+/api/v1/analysis/artifacts/
+/api/v1/analysis/artifacts/{id}/
+/api/v1/analysis/artifacts/{id}/image/
+```
+
+PostgreSQL controls artifact selection. The API does not expose local paths,
+DICOM files, or NumPy arrays. Operation execution and frontend controls remain
+future work.
 
 ## One-Command Local Backend Demo
 
