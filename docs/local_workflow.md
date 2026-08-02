@@ -168,8 +168,12 @@ CT rescale and Gaussian visualization require explicit window center and width.
 CT Sobel and PT visualization use percentile display scaling. PT values remain
 `rescaled_pixel_value`, not SUV. PNG files are written under
 `outputs/visualizations/`, which is ignored by Git. Artifact metadata is printed
-locally and is not stored in PostgreSQL yet. Step 19 adds no public API or
-frontend changes.
+locally and registered in PostgreSQL. `VisualizationArtifact` links the
+repository-relative PNG path, checksum, file size, display settings, operation,
+modality, and units to the source `ImagingInstance`. PNG bytes and NumPy arrays
+are not stored in PostgreSQL, and local paths are not exposed through the public
+API. API access to artifact metadata will be implemented in a later step. Step
+19 and Step 20 add no public API or frontend changes.
 
 ## One-Command Local Backend Demo
 

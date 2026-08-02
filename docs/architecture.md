@@ -45,6 +45,8 @@ models, API endpoints, and frontend dashboard.
   as a local PNG under `outputs/visualizations/`, which is ignored by Git.
   CT intensity images require an explicit window center and width; CT Sobel and
   PT images use percentile display scaling. PT values are not SUV.
+- `apps.analysis.VisualizationArtifact` registers generated PNG artifact
+  metadata in PostgreSQL and links each artifact to its `ImagingInstance`.
 - `config.urls` exposes read-only API routes under `/api/v1/`.
 - `config.cors` allows only configured development frontend origins to read the
   API during local dashboard development.
@@ -81,7 +83,7 @@ raw-DICOM or pixel API.
    result as a local PNG artifact. CT rescale and Gaussian visualizations
    require explicit window center and width. CT Sobel and PT visualizations use
    percentile display scaling. Artifact metadata is printed locally and is not
-   stored in PostgreSQL yet.
+   registered in PostgreSQL.
 8. Read-only DRF endpoints expose overview, imaging, ingestion, and analysis
    metadata.
 9. The React dashboard fetches the API responses and displays a compact
@@ -111,8 +113,13 @@ files, and does not run analysis in the browser.
 - Pixel arrays are read only by the private local DB-selected loader.
 - Scientific arrays produced from DB-selected DICOM pixels remain private local
   process results. They are not stored in PostgreSQL or exposed through public
-  APIs. PNG visualization artifacts are local files ignored by Git, and their
-  metadata is not stored in PostgreSQL yet.
+  APIs. PNG visualization artifacts are local files ignored by Git.
+- PostgreSQL stores visualization artifact metadata only: the related
+  `ImagingInstance`, repository-relative path, checksum, file size, display
+  settings, operation, modality, and units. PNG bytes and NumPy arrays are not
+  stored.
+- Local visualization paths are not exposed through the public API. API access
+  to artifact metadata will be implemented in a later step.
 - The API and frontend expose metadata only.
 - The geometry summary is derived from already ingested metadata.
 - The project is not intended for diagnosis, treatment decisions, or production
@@ -137,4 +144,5 @@ resolve repository-relative paths and explicitly load pixel data. Step 18 adds
 private local NumPy/SciPy operations for one selected two-dimensional slice:
 DICOM rescaling, Gaussian filtering, and Sobel gradient magnitude. Step 19 adds
 local PNG rendering from those scientific results without adding API or
-frontend exposure.
+frontend exposure. Step 20 registers the generated PNG metadata in PostgreSQL
+without storing PNG bytes or NumPy arrays.
