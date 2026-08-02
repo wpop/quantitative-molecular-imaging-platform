@@ -63,6 +63,7 @@ datasets/derived/*
 !datasets/derived/.gitignore
 datasets/raw/*
 !datasets/raw/.gitignore
+outputs/visualizations/
 
 # IDE and operating system files
 .idea/

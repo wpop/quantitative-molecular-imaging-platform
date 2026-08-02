@@ -152,6 +152,25 @@ The scientific result array remains a private local process result. It is not
 written to PostgreSQL, not exposed through public APIs, not saved to disk, and
 no visualization artifact is generated in Step 18.
 
+## Local Scientific Visualization Artifact
+
+Step 19 can render a PostgreSQL-selected scientific result as a local PNG file:
+
+```sh
+POSTGRES_PASSWORD=qmip_dev_password python scripts/generate_dicom_visualization.py \
+  --series-instance-uid 1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254 \
+  --operation rescale \
+  --window-center 40 \
+  --window-width 400
+```
+
+CT rescale and Gaussian visualization require explicit window center and width.
+CT Sobel and PT visualization use percentile display scaling. PT values remain
+`rescaled_pixel_value`, not SUV. PNG files are written under
+`outputs/visualizations/`, which is ignored by Git. Artifact metadata is printed
+locally and is not stored in PostgreSQL yet. Step 19 adds no public API or
+frontend changes.
+
 ## One-Command Local Backend Demo
 
 After the selected DICOM subset has already been downloaded locally, run the
