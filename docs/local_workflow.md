@@ -129,6 +129,28 @@ http://localhost:8000/api/v1/overview/
 
 See [api_usage.md](api_usage.md) for endpoint examples.
 
+## Run The Frontend Dashboard
+
+The dashboard is a Vite, React, and TypeScript app that reads metadata from the
+backend API. Start it from a second shell after the backend server is running:
+
+```sh
+cd frontend
+npm install
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:5173/
+```
+
+The frontend uses `VITE_API_BASE_URL` when set and defaults to
+`http://localhost:8000`. It displays overview counts, imaging series metadata,
+and stored quantitative analysis results. It does not download DICOM data, read
+pixel arrays, or perform image diagnosis.
+
 ## Metadata-Only Geometry Summary
 
 Run the first quantitative metadata summary after ingestion:
