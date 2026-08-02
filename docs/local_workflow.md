@@ -193,7 +193,12 @@ optional `slice_index`, `gaussian_sigma`, `window_center`, `window_width`,
 PostgreSQL-selected loader, scientific operation, PNG renderer, and artifact
 registry. Clients do not submit DICOM paths, artifact paths, output paths, image
 bytes, or arrays. The response exposes artifact metadata and `image_url`, not a
-local path. Frontend execution controls remain future work.
+local path.
+
+The React dashboard includes generation controls for the same parameters. On
+success it refreshes the active artifact collection, selects the registered
+artifact returned by the backend, and displays its PNG through `image_url`.
+This remains non-clinical research software.
 
 ## One-Command Local Backend Demo
 
