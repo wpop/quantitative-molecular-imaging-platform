@@ -15,7 +15,7 @@ flowchart LR
     D --> E[(PostgreSQL metadata)]
     E --> F[Geometry summary analysis]
     E --> I[DB-selected local pixel loader]
-    I --> J[NumPy array for local scientific work]
+    I --> J[Private NumPy/SciPy scientific operation]
     E --> G[Read-only DRF API]
     F --> G
     G --> H[React dashboard]
@@ -36,6 +36,10 @@ models, API endpoints, and frontend dashboard.
 - `apps.analysis.imaging_io` selects local DICOM instances through PostgreSQL,
   resolves `LocalDicomFile` records, and explicitly loads `pixel_array` for
   local scientific processing.
+- `apps.analysis.scientific_operations` privately rescales DB-selected DICOM
+  pixels with `RescaleSlope` and `RescaleIntercept`, then can run
+  `scipy.ndimage.gaussian_filter` or `scipy.ndimage.sobel` on the local NumPy
+  array.
 - `config.urls` exposes read-only API routes under `/api/v1/`.
 - `config.cors` allows only configured development frontend origins to read the
   API during local dashboard development.
@@ -60,9 +64,17 @@ raw-DICOM or pixel API.
 5. `scripts/load_dicom_pixels_from_db.py` selects an `ImagingSeries` and
    `ImagingInstance` through PostgreSQL, resolves the linked `LocalDicomFile`,
    and explicitly reads `pydicom` `pixel_array` into a NumPy array.
-6. Read-only DRF endpoints expose overview, imaging, ingestion, and analysis
+6. `scripts/run_dicom_scientific_operation.py` can run a private local
+   scientific operation on the DB-selected DICOM pixels. It applies
+   `RescaleSlope` and `RescaleIntercept` first. CT rescaled values are reported
+   as Hounsfield Units (`HU`); PT values are reported only as
+   `rescaled_pixel_value`, not SUV. Gaussian filtering uses
+   `scipy.ndimage.gaussian_filter`. Sobel uses `scipy.ndimage.sobel` on both
+   axes and reports gradient magnitude units rather than original intensity
+   units.
+7. Read-only DRF endpoints expose overview, imaging, ingestion, and analysis
    metadata.
-7. The React dashboard fetches the API responses and displays a compact
+8. The React dashboard fetches the API responses and displays a compact
    metadata summary.
 
 ## Frontend Role
@@ -87,6 +99,9 @@ files, and does not run analysis in the browser.
 - No fake patient records or synthetic DICOM files are created.
 - No pixel arrays are read by ingestion or validation scripts.
 - Pixel arrays are read only by the private local DB-selected loader.
+- Scientific arrays produced from DB-selected DICOM pixels remain private local
+  process results. They are not stored in PostgreSQL, exposed through public
+  APIs, saved as images, or written as visualization artifacts.
 - The API and frontend expose metadata only.
 - The geometry summary is derived from already ingested metadata.
 - The project is not intended for diagnosis, treatment decisions, or production
@@ -103,10 +118,12 @@ files, and does not run analysis in the browser.
 - Large dataset processing.
 - CI workflows that require local raw DICOM data.
 
-## Future Scientific Operations
+## Private Scientific Operations
 
 The `LocalDicomFile` registry is the bridge for scientific operations:
 PostgreSQL selects specific real DICOM instances, then local-only workers
-resolve repository-relative paths and explicitly load pixel data. NumPy/SciPy
-operations, CT windowing, Hounsfield Unit conversion, and visualization are
-intentionally left for later steps.
+resolve repository-relative paths and explicitly load pixel data. Step 18 adds
+private local NumPy/SciPy operations for one selected two-dimensional slice:
+DICOM rescaling, Gaussian filtering, and Sobel gradient magnitude. No
+visualization artifact is generated in this step, and the public API remains
+metadata-only.
