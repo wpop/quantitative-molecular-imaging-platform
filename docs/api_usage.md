@@ -2,7 +2,7 @@
 
 The backend exposes read-only, metadata-only REST API endpoints through Django
 REST Framework. The API reads PostgreSQL metadata only. It does not read raw
-DICOM files, expose DICOM pixel data, or perform image analysis.
+DICOM files, expose DICOM pixel data, run analysis, or perform image diagnosis.
 
 ## Run The Development Server
 
@@ -33,7 +33,8 @@ http://localhost:8000/api/v1/
 - `GET /api/v1/analysis/results/`
 
 Write methods such as `POST`, `PUT`, `PATCH`, and `DELETE` are not supported
-for these metadata endpoints.
+for these metadata endpoints. Uploads, authentication, SQL explorer, and
+query-builder workflows are intentionally out of scope for v0.1.
 
 ## Overview Example
 

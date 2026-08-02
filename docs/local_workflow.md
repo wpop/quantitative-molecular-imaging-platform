@@ -4,6 +4,10 @@ This guide describes the local development workflow for the backend and the
 optional selected real-data validation path. Raw DICOM files are optional,
 local-only, and remain under `datasets/raw/`.
 
+For a quick portfolio review, start local services, apply migrations, run the
+one-command backend demo if the selected DICOM subset already exists locally,
+then start the API and frontend dashboard.
+
 ## Environment Setup
 
 Create and activate a Python 3.12 environment using your preferred tool. Then
