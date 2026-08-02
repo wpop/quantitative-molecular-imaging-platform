@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "quantitative-molecular-imaging-backend"
-version = "0.1.0"
+version = "0.2.0"
 description = "Research backend for quantitative PET/CT molecular imaging workflows."
 requires-python = ">=3.12,<3.13"
 license = { text = "MIT" }
