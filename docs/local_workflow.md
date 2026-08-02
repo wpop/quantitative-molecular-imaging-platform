@@ -179,12 +179,21 @@ endpoints and serves PNG files through artifact IDs:
 /api/v1/analysis/artifacts/
 /api/v1/analysis/artifacts/{id}/
 /api/v1/analysis/artifacts/{id}/image/
+/api/v1/analysis/artifacts/generate/
 ```
 
 PostgreSQL controls artifact selection. The API does not expose local paths,
 DICOM files, or NumPy arrays. The React dashboard displays these registered
 artifacts with read-only filters and requests PNG files through artifact image
-URLs. Scientific-operation execution remains future work.
+URLs.
+
+The controlled generation endpoint accepts `series_instance_uid`, `operation`,
+optional `slice_index`, `gaussian_sigma`, `window_center`, `window_width`,
+`lower_percentile`, `upper_percentile`, and `dpi`. It runs the existing
+PostgreSQL-selected loader, scientific operation, PNG renderer, and artifact
+registry. Clients do not submit DICOM paths, artifact paths, output paths, image
+bytes, or arrays. The response exposes artifact metadata and `image_url`, not a
+local path. Frontend execution controls remain future work.
 
 ## One-Command Local Backend Demo
 

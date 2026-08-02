@@ -164,10 +164,18 @@ Read-only metadata endpoints:
 - `GET /api/v1/analysis/results/`
 - `GET /api/v1/analysis/artifacts/`
 - `GET /api/v1/analysis/artifacts/{id}/image/`
+- `POST /api/v1/analysis/artifacts/generate/`
 
 The API does not provide create, update, delete, upload, SQL explorer, or
 query-builder endpoints. See [docs/api_usage.md](docs/api_usage.md) for curl
 examples and supported query parameters.
+
+The controlled visualization-generation endpoint accepts a
+`series_instance_uid`, `operation`, and optional `slice_index`,
+`gaussian_sigma`, `window_center`, `window_width`, `lower_percentile`,
+`upper_percentile`, and `dpi`. PostgreSQL controls series selection; clients do
+not submit filesystem paths. Successful responses return registered artifact
+metadata and `image_url`, not local paths.
 
 ## Frontend Dashboard
 

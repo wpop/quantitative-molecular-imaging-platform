@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from django.db.models import Count, QuerySet
 from django.http import FileResponse
+from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from apps.analysis.api.artifact_files import resolve_visualization_artifact_path
@@ -14,8 +17,13 @@ from apps.analysis.api.serializers import (
     AnalysisRunSerializer,
     MeasurementResultSerializer,
     VisualizationArtifactSerializer,
+    VisualizationExecutionRequestSerializer,
 )
 from apps.analysis.models import AnalysisRun, MeasurementResult, VisualizationArtifact
+from apps.analysis.visualization_execution import (
+    VisualizationExecutionError,
+    execute_visualization_request,
+)
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
@@ -125,3 +133,38 @@ class VisualizationArtifactViewSet(ReadOnlyModelViewSet[VisualizationArtifact]):
             as_attachment=False,
             filename=image_path.name,
         )
+
+
+class VisualizationArtifactGenerateView(APIView):
+    """Generate and register one visualization artifact through controlled parameters."""
+
+    def post(self, request: Request) -> Response:
+        request_serializer = VisualizationExecutionRequestSerializer(data=request.data)
+        request_serializer.is_valid(raise_exception=True)
+        data = request_serializer.validated_data
+
+        try:
+            artifact = execute_visualization_request(
+                series_instance_uid=cast("str", data["series_instance_uid"]),
+                operation=cast("str", data["operation"]),
+                slice_index=cast("int | None", data.get("slice_index")),
+                gaussian_sigma=cast("float", data.get("gaussian_sigma", 1.0)),
+                window_center=cast("float | None", data.get("window_center")),
+                window_width=cast("float | None", data.get("window_width")),
+                lower_percentile=cast("float", data.get("lower_percentile", 1.0)),
+                upper_percentile=cast("float", data.get("upper_percentile", 99.0)),
+                dpi=cast("int", data.get("dpi", 150)),
+            )
+        except VisualizationExecutionError as exc:
+            response_status = (
+                status.HTTP_404_NOT_FOUND
+                if exc.series_selection_failed
+                else status.HTTP_400_BAD_REQUEST
+            )
+            return Response({"detail": exc.public_message}, status=response_status)
+
+        response_serializer = VisualizationArtifactSerializer(
+            artifact,
+            context={"request": request},
+        )
+        return Response(response_serializer.data, status=status.HTTP_200_OK)

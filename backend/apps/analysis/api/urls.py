@@ -6,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 from apps.analysis.api.views import (
     AnalysisRunViewSet,
     MeasurementResultViewSet,
+    VisualizationArtifactGenerateView,
     VisualizationArtifactViewSet,
 )
 
@@ -17,5 +18,10 @@ router.register("results", MeasurementResultViewSet, basename="measurement-resul
 app_name = "analysis-api"
 
 urlpatterns = [
+    path(
+        "artifacts/generate/",
+        VisualizationArtifactGenerateView.as_view(),
+        name="visualization-artifact-generate",
+    ),
     path("", include(router.urls)),
 ]

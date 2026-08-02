@@ -1,9 +1,15 @@
 """Serializers for read-only analysis metadata APIs."""
 
+from collections.abc import Mapping
+from typing import cast
+
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
 from apps.analysis.models import AnalysisRun, MeasurementResult, VisualizationArtifact
+from apps.analysis.scientific_operations import ScientificOperation
+
+MAX_PERCENTILE = 100.0
 
 
 class AnalysisRunSerializer(serializers.ModelSerializer[AnalysisRun]):
@@ -116,3 +122,51 @@ class VisualizationArtifactSerializer(serializers.ModelSerializer[VisualizationA
             kwargs={"pk": artifact.pk},
             request=request if request is not None else None,
         )
+
+
+class VisualizationExecutionRequestSerializer(serializers.Serializer[dict[str, object]]):
+    """Validate requests for controlled visualization artifact generation."""
+
+    series_instance_uid = serializers.CharField(required=True, allow_blank=False)
+    operation = serializers.ChoiceField(
+        required=True,
+        choices=[operation.value for operation in ScientificOperation],
+    )
+    slice_index = serializers.IntegerField(required=False, min_value=0)
+    gaussian_sigma = serializers.FloatField(required=False, min_value=0.0)
+    window_center = serializers.FloatField(required=False)
+    window_width = serializers.FloatField(required=False, min_value=0.0)
+    lower_percentile = serializers.FloatField(required=False)
+    upper_percentile = serializers.FloatField(required=False)
+    dpi = serializers.IntegerField(required=False, min_value=1)
+
+    def to_internal_value(self, data: object) -> dict[str, object]:
+        if isinstance(data, Mapping):
+            unsupported_fields = sorted(str(key) for key in data if str(key) not in self.fields)
+            if unsupported_fields:
+                message = "Unsupported field."
+                raise serializers.ValidationError(
+                    dict.fromkeys(unsupported_fields, message),
+                )
+        return cast("dict[str, object]", super().to_internal_value(data))
+
+    def validate_gaussian_sigma(self, value: float) -> float:
+        if value <= 0:
+            message = "Gaussian sigma must be greater than zero."
+            raise serializers.ValidationError(message)
+        return value
+
+    def validate_window_width(self, value: float) -> float:
+        if value <= 0:
+            message = "Window width must be greater than zero."
+            raise serializers.ValidationError(message)
+        return value
+
+    def validate(self, attrs: dict[str, object]) -> dict[str, object]:
+        lower_percentile = cast("float", attrs.get("lower_percentile", 1.0))
+        upper_percentile = cast("float", attrs.get("upper_percentile", 99.0))
+        if not 0 <= lower_percentile < upper_percentile <= MAX_PERCENTILE:
+            raise serializers.ValidationError(
+                {"percentiles": "Percentiles must satisfy 0 <= lower < upper <= 100."},
+            )
+        return attrs
