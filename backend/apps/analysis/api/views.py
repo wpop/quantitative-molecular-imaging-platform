@@ -5,13 +5,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from django.db.models import Count, QuerySet
+from django.http import FileResponse
+from rest_framework.decorators import action
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from apps.analysis.api.artifact_files import resolve_visualization_artifact_path
 from apps.analysis.api.serializers import (
     AnalysisRunSerializer,
     MeasurementResultSerializer,
+    VisualizationArtifactSerializer,
 )
-from apps.analysis.models import AnalysisRun, MeasurementResult
+from apps.analysis.models import AnalysisRun, MeasurementResult, VisualizationArtifact
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
@@ -81,3 +85,43 @@ class MeasurementResultViewSet(ReadOnlyModelViewSet[MeasurementResult]):
         if modality:
             queryset = queryset.filter(metadata__modality=modality)
         return queryset
+
+
+class VisualizationArtifactViewSet(ReadOnlyModelViewSet[VisualizationArtifact]):
+    """List, retrieve, and safely serve registered visualization artifacts."""
+
+    serializer_class = VisualizationArtifactSerializer
+    queryset = VisualizationArtifact.objects.select_related(
+        "instance",
+        "instance__series",
+        "instance__series__study",
+    ).order_by("-created_at", "id")
+
+    def get_queryset(self) -> QuerySet[VisualizationArtifact]:
+        queryset = super().get_queryset()
+        request: Request = self.request
+        series_instance_uid = request.query_params.get("series_instance_uid")
+        sop_instance_uid = request.query_params.get("sop_instance_uid")
+        operation = request.query_params.get("operation")
+        modality = request.query_params.get("modality")
+        if series_instance_uid:
+            queryset = queryset.filter(instance__series__series_instance_uid=series_instance_uid)
+        if sop_instance_uid:
+            queryset = queryset.filter(instance__sop_instance_uid=sop_instance_uid)
+        if operation:
+            queryset = queryset.filter(operation=operation)
+        if modality:
+            queryset = queryset.filter(modality=modality)
+        return queryset
+
+    @action(detail=True, methods=["get"], url_path="image")
+    def image(self, request: Request, pk: str | None = None) -> FileResponse:
+        del request, pk
+        artifact = self.get_object()
+        image_path = resolve_visualization_artifact_path(artifact.relative_path)
+        return FileResponse(
+            image_path.open("rb"),
+            content_type="image/png",
+            as_attachment=False,
+            filename=image_path.name,
+        )

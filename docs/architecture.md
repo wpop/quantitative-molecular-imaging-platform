@@ -82,10 +82,11 @@ raw-DICOM or pixel API.
 7. `scripts/generate_dicom_visualization.py` can render the private scientific
    result as a local PNG artifact. CT rescale and Gaussian visualizations
    require explicit window center and width. CT Sobel and PT visualizations use
-   percentile display scaling. Artifact metadata is printed locally and is not
-   registered in PostgreSQL.
+   percentile display scaling. Generated artifact metadata is registered in
+   PostgreSQL.
 8. Read-only DRF endpoints expose overview, imaging, ingestion, and analysis
-   metadata.
+   metadata, including registered visualization artifact metadata. PNG files are
+   served through artifact database IDs, not through local paths.
 9. The React dashboard fetches the API responses and displays a compact
    metadata summary.
 
@@ -119,7 +120,8 @@ files, and does not run analysis in the browser.
   settings, operation, modality, and units. PNG bytes and NumPy arrays are not
   stored.
 - Local visualization paths are not exposed through the public API. API access
-  to artifact metadata will be implemented in a later step.
+  to artifact metadata is read-only and serves PNG files only through artifact
+  IDs. The endpoint does not expose DICOM files or NumPy arrays.
 - The API and frontend expose metadata only.
 - The geometry summary is derived from already ingested metadata.
 - The project is not intended for diagnosis, treatment decisions, or production
@@ -145,4 +147,6 @@ private local NumPy/SciPy operations for one selected two-dimensional slice:
 DICOM rescaling, Gaussian filtering, and Sobel gradient magnitude. Step 19 adds
 local PNG rendering from those scientific results without adding API or
 frontend exposure. Step 20 registers the generated PNG metadata in PostgreSQL
-without storing PNG bytes or NumPy arrays.
+without storing PNG bytes or NumPy arrays. Step 21 adds read-only artifact
+metadata and PNG responses for registered artifacts; operation execution and
+frontend controls remain separate future steps.
