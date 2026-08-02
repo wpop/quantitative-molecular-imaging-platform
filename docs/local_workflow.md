@@ -93,8 +93,15 @@ POSTGRES_PASSWORD=qmip_dev_password python scripts/ingest_local_dicom_metadata.p
 ```
 
 The ingestion is idempotent for `ImagingStudy`, `ImagingSeries`, and
-`ImagingInstance`. It reads DICOM headers only with `pydicom`
-`stop_before_pixels=True`.
+`ImagingInstance`. It also creates or updates one `LocalDicomFile` registry
+record per ingested instance. Each registry row links an `ImagingInstance` to a
+repository-relative local file path, SHA-256 checksum, file size, and
+availability flag. Absolute paths are not stored, and local file paths are not
+exposed through the public metadata API.
+
+The ingestion reads DICOM headers only with `pydicom stop_before_pixels=True`.
+The registry exists so later local-only scientific operations can select real
+DICOM files through PostgreSQL before explicitly loading pixel data.
 
 ## One-Command Local Backend Demo
 
