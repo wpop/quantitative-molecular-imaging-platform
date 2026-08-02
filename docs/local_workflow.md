@@ -103,6 +103,33 @@ The ingestion reads DICOM headers only with `pydicom stop_before_pixels=True`.
 The registry exists so later local-only scientific operations can select real
 DICOM files through PostgreSQL before explicitly loading pixel data.
 
+## Local DB-Selected Pixel Loading
+
+After validation and ingestion, the private local loader can select one
+`ImagingSeries` and `ImagingInstance` through PostgreSQL, resolve the linked
+`LocalDicomFile`, and explicitly read `pydicom` `pixel_array` into a NumPy
+array. This is a local scientific-processing layer, not a public raw-DICOM API.
+Raw pixel arrays and local file paths are not exposed by the existing public API
+endpoints.
+
+CT middle slice:
+
+```sh
+POSTGRES_PASSWORD=qmip_dev_password python scripts/load_dicom_pixels_from_db.py \
+  --series-instance-uid 1.3.6.1.4.1.14519.5.2.1.133320994602881796006698916833783151254
+```
+
+PT middle slice:
+
+```sh
+POSTGRES_PASSWORD=qmip_dev_password python scripts/load_dicom_pixels_from_db.py \
+  --series-instance-uid 1.3.6.1.4.1.14519.5.2.1.246352124462042526540512717085218914533
+```
+
+This step does not download data, does not call external services, does not run
+SciPy operations, and does not generate PNG visualizations. NumPy/SciPy
+operations and visualization will be implemented in later steps.
+
 ## One-Command Local Backend Demo
 
 After the selected DICOM subset has already been downloaded locally, run the
