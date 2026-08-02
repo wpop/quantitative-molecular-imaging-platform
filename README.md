@@ -18,6 +18,8 @@ treatment decisions, or production patient care.
   metadata API reads PostgreSQL only.
 - Local utility scripts support optional real-data metadata query, selected
   series download, checksum/header validation, and metadata ingestion.
+- A minimal Vite, React, and TypeScript dashboard displays metadata returned by
+  the backend API.
 
 The API is read-only and metadata-only. It does not read raw DICOM files, expose
 raw DICOM content, expose pixel data, or perform image analysis.
@@ -120,9 +122,33 @@ Read-only metadata endpoints:
 - `GET /api/v1/imaging/instances/`
 - `GET /api/v1/ingestion/jobs/`
 - `GET /api/v1/ingestion/events/`
+- `GET /api/v1/analysis/runs/`
+- `GET /api/v1/analysis/results/`
 
 See [docs/api_usage.md](docs/api_usage.md) for curl examples and query
 parameters.
+
+## Frontend Dashboard
+
+Start the backend API first:
+
+```sh
+cd backend
+POSTGRES_PASSWORD=qmip_dev_password python manage.py runserver --settings=config.settings.development
+```
+
+In another shell, start the frontend:
+
+```sh
+cd frontend
+npm install
+npm run dev
+```
+
+The dashboard uses `VITE_API_BASE_URL` when set and defaults to
+`http://localhost:8000`. It displays overview counts, imaging series metadata,
+and stored analysis results. It is metadata-only: no DICOM files or pixel data
+are loaded in the browser.
 
 ## Quality Checks
 
