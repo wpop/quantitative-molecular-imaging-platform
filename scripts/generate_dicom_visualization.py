@@ -59,6 +59,10 @@ def main() -> int:
         return 1
 
     try:
+        from apps.analysis.artifact_registry import (
+            VisualizationArtifactRegistryError,
+            register_visualization_artifact,
+        )
         from apps.analysis.imaging_io import DicomPixelLoadError
         from apps.analysis.scientific_operations import ScientificOperationError
         from apps.analysis.visualization import VisualizationError, run_visualization_for_series
@@ -76,7 +80,9 @@ def main() -> int:
             upper_percentile=args.upper_percentile,
             dpi=args.dpi,
         )
+        registered_artifact = register_visualization_artifact(artifact)
     except (
+        VisualizationArtifactRegistryError,
         VisualizationError,
         ScientificOperationError,
         DicomPixelLoadError,
@@ -103,6 +109,8 @@ def main() -> int:
     print(f"MIME type: {artifact.mime_type}")
     print(f"File size bytes: {artifact.file_size_bytes}")
     print(f"SHA-256: {artifact.sha256}")
+    print(f"Artifact database id: {registered_artifact.id}")
+    print("Artifact registered: yes")
     return 0
 
 
