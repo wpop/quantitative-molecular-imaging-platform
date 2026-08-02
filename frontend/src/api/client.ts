@@ -69,6 +69,40 @@ export type MeasurementResult = {
   created_at: string;
 };
 
+export type VisualizationArtifactOperation = "rescale" | "gaussian" | "sobel";
+
+export type VisualizationArtifact = {
+  id: number;
+  instance_id: number;
+  sop_instance_uid: string;
+  series_instance_uid: string;
+  study_instance_uid: string;
+  operation: VisualizationArtifactOperation;
+  modality: string;
+  slice_index: number;
+  value_units: string;
+  rows: number;
+  columns: number;
+  colormap: string;
+  display_minimum: number | null;
+  display_maximum: number | null;
+  window_center: number | null;
+  window_width: number | null;
+  mime_type: string;
+  file_size_bytes: number;
+  file_sha256: string;
+  created_at: string;
+  updated_at: string;
+  image_url: string;
+};
+
+export type VisualizationArtifactFilters = {
+  series_instance_uid?: string;
+  sop_instance_uid?: string;
+  operation?: VisualizationArtifactOperation;
+  modality?: string;
+};
+
 type DashboardData = {
   overview: Overview;
   studies: ImagingStudy[];
@@ -91,6 +125,23 @@ async function fetchJson<T>(path: string): Promise<T> {
   }
 
   return (await response.json()) as T;
+}
+
+function buildArtifactPath(filters: VisualizationArtifactFilters): string {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(filters)) {
+    if (value) {
+      query.set(key, value);
+    }
+  }
+  const queryString = query.toString();
+  return queryString ? `/api/v1/analysis/artifacts/?${queryString}` : "/api/v1/analysis/artifacts/";
+}
+
+export async function fetchVisualizationArtifacts(
+  filters: VisualizationArtifactFilters = {},
+): Promise<VisualizationArtifact[]> {
+  return fetchJson<VisualizationArtifact[]>(buildArtifactPath(filters));
 }
 
 export async function fetchDashboardData(): Promise<DashboardData> {

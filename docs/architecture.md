@@ -88,7 +88,7 @@ raw-DICOM or pixel API.
    metadata, including registered visualization artifact metadata. PNG files are
    served through artifact database IDs, not through local paths.
 9. The React dashboard fetches the API responses and displays a compact
-   metadata summary.
+   metadata summary plus a read-only visualization artifact workbench.
 
 ## Frontend Role
 
@@ -99,9 +99,11 @@ from a browser-based dashboard and displays:
 - Modalities and latest ingestion status.
 - Imaging series metadata.
 - Stored quantitative measurement metadata.
+- Registered visualization artifact metadata with read-only filters.
+- Registered PNG images requested through artifact `image_url` values.
 
-It does not load raw DICOM files, does not display pixel data, does not upload
-files, and does not run analysis in the browser.
+It does not load raw DICOM files, does not expose local paths, does not upload
+files, and does not run analysis or artifact generation in the browser.
 
 ## Safety Boundaries
 
@@ -149,4 +151,6 @@ local PNG rendering from those scientific results without adding API or
 frontend exposure. Step 20 registers the generated PNG metadata in PostgreSQL
 without storing PNG bytes or NumPy arrays. Step 21 adds read-only artifact
 metadata and PNG responses for registered artifacts; operation execution and
-frontend controls remain separate future steps.
+frontend operation controls remain separate future steps. Step 22 displays
+registered artifacts in the React dashboard with read-only filters and PNG
+requests through artifact image URLs.

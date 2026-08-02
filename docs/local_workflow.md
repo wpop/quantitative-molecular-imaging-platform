@@ -182,8 +182,9 @@ endpoints and serves PNG files through artifact IDs:
 ```
 
 PostgreSQL controls artifact selection. The API does not expose local paths,
-DICOM files, or NumPy arrays. Operation execution and frontend controls remain
-future work.
+DICOM files, or NumPy arrays. The React dashboard displays these registered
+artifacts with read-only filters and requests PNG files through artifact image
+URLs. Scientific-operation execution remains future work.
 
 ## One-Command Local Backend Demo
 
