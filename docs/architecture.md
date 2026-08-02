@@ -1,172 +1,165 @@
 # Architecture
 
-Quantitative Molecular Imaging Platform v0.1 is a research software workflow
-for a small selected public deidentified PET/CT subset. The system is designed
-to show safe medical imaging data handling, PostgreSQL-backed metadata modeling,
-read-only APIs, and a small reviewer-friendly dashboard.
+Quantitative Molecular Imaging Platform is a local research workflow for a
+selected public deidentified TCIA PET/CT subset. The system demonstrates safe
+metadata handling, PostgreSQL-backed registries, database-selected local pixel
+processing, registered visualization artifacts, and a browser workbench for
+reviewing generated scientific PNGs and metadata.
 
-## System Overview
+It is not clinical software. It is not designed for diagnosis, treatment
+decisions, or production patient care.
+
+## System Diagram
 
 ```mermaid
-flowchart LR
-    A[Real public TCIA PET/CT subset] --> B[Local DICOM files ignored by Git]
-    B --> C[Validation script]
-    C --> D[Ingestion script]
-    D --> E[(PostgreSQL metadata)]
-    E --> F[Geometry summary analysis]
-    E --> I[DB-selected local pixel loader]
-    I --> J[Private NumPy/SciPy scientific operation]
-    J --> K[Local ignored PNG visualization artifact]
-    E --> G[Read-only DRF API]
-    F --> G
-    G --> H[React dashboard]
+flowchart TB
+    A[Public deidentified TCIA PET/CT subset] --> B[Local filesystem DICOM files]
+    B --> C[Validation scripts]
+    B --> D[DICOM metadata ingestion]
+    D --> E[(PostgreSQL imaging metadata)]
+    D --> F[(LocalDicomFile registry)]
+    E --> G[Metadata-only geometry summary]
+    E --> H[Database-selected DICOM pixel loader]
+    F --> H
+    H --> I[NumPy/SciPy scientific operations]
+    I --> J[Matplotlib PNG renderer]
+    J --> K[Local filesystem generated PNG files]
+    J --> L[(VisualizationArtifact registry)]
+    E --> M[Django REST Framework API]
+    G --> M
+    L --> M
+    M --> N[React/TypeScript workbench]
+
+    K -. PNG bytes stay on disk .-> M
+    M -. registered IDs and image_url only .-> N
 ```
 
-The raw selected DICOM subset is optional and local-only. It is stored under
-`datasets/raw/`, which is ignored by Git. The durable project artifacts are the
-manifest documentation, metadata validation scripts, ingestion scripts, Django
-models, API endpoints, and frontend dashboard.
+PostgreSQL stores metadata. It does not store raw DICOM files, PNG bytes, or
+NumPy arrays. Local filesystem paths are used by server-side processing and
+registry validation, but public API responses are shaped around artifact IDs,
+metadata fields, and `image_url` values.
 
-## Backend Components
+## Component Responsibilities
 
-- `apps.imaging` stores study, series, and instance metadata.
-- `apps.imaging.LocalDicomFile` maps one ingested `ImagingInstance` to one
-  repository-relative local DICOM file.
-- `apps.ingestion` stores ingestion job and event metadata.
-- `apps.analysis` stores analysis runs and measurement results.
-- `apps.analysis.imaging_io` selects local DICOM instances through PostgreSQL,
-  resolves `LocalDicomFile` records, and explicitly loads `pixel_array` for
-  local scientific processing.
-- `apps.analysis.scientific_operations` privately rescales DB-selected DICOM
-  pixels with `RescaleSlope` and `RescaleIntercept`, then can run
-  `scipy.ndimage.gaussian_filter` or `scipy.ndimage.sobel` on the local NumPy
-  array.
-- `apps.analysis.visualization` renders an existing private scientific result
-  as a local PNG under `outputs/visualizations/`, which is ignored by Git.
-  CT intensity images require an explicit window center and width; CT Sobel and
-  PT images use percentile display scaling. PT values are not SUV.
-- `apps.analysis.VisualizationArtifact` registers generated PNG artifact
-  metadata in PostgreSQL and links each artifact to its `ImagingInstance`.
-- `config.urls` exposes read-only API routes under `/api/v1/`.
-- `config.cors` allows only configured development frontend origins to read the
-  API during local dashboard development.
+`apps.imaging` owns study, series, instance, and `LocalDicomFile` metadata. The
+local DICOM file registry maps one ingested `ImagingInstance` to one
+repository-relative local file path, checksum, file size, and availability flag.
+Absolute paths and parent traversal are rejected by model validation.
 
-The backend API reads PostgreSQL metadata only. It does not read raw DICOM
-files, does not expose DICOM pixel data, and does not perform image diagnosis.
-Local DICOM registry paths are not exposed through the public metadata API.
-The pixel-loading service is a private local processing layer, not a public
-raw-DICOM or pixel API.
+`apps.ingestion` tracks ingestion jobs and event metadata. The ingestion scripts
+read DICOM headers with `pydicom stop_before_pixels=True` and upsert the
+PostgreSQL metadata needed by downstream operations.
 
-## Data Flow
+`apps.analysis` owns analysis runs, measurement results, scientific operation
+helpers, visualization rendering, artifact registration, and artifact API
+views. The scientific operation layer explicitly loads pixel arrays only after
+PostgreSQL selects the target series and instance through the local registry.
 
-1. A selected public TCIA PET/CT subset can be downloaded locally for optional
-   validation.
-2. `scripts/validate_local_dicom_subset.py` verifies checksums and DICOM
-   headers without reading pixel arrays.
-3. `scripts/ingest_local_dicom_metadata.py` reads DICOM headers with
-   `pydicom stop_before_pixels=True`, upserts imaging metadata, and creates
-   `LocalDicomFile` records for repository-relative local file access.
-4. `scripts/run_series_geometry_summary.py` reads PostgreSQL metadata and
-   creates a minimal geometry summary as analysis metadata.
-5. `scripts/load_dicom_pixels_from_db.py` selects an `ImagingSeries` and
-   `ImagingInstance` through PostgreSQL, resolves the linked `LocalDicomFile`,
-   and explicitly reads `pydicom` `pixel_array` into a NumPy array.
-6. `scripts/run_dicom_scientific_operation.py` can run a private local
-   scientific operation on the DB-selected DICOM pixels. It applies
-   `RescaleSlope` and `RescaleIntercept` first. CT rescaled values are reported
-   as Hounsfield Units (`HU`); PT values are reported only as
-   `rescaled_pixel_value`, not SUV. Gaussian filtering uses
-   `scipy.ndimage.gaussian_filter`. Sobel uses `scipy.ndimage.sobel` on both
-   axes and reports gradient magnitude units rather than original intensity
-   units.
-7. `scripts/generate_dicom_visualization.py` can render the private scientific
-   result as a local PNG artifact. CT rescale and Gaussian visualizations
-   require explicit window center and width. CT Sobel and PT visualizations use
-   percentile display scaling. Generated artifact metadata is registered in
-   PostgreSQL.
-8. Read-only DRF endpoints expose overview, imaging, ingestion, and analysis
-   metadata, including registered visualization artifact metadata. PNG files are
-   served through artifact database IDs, not through local paths.
-9. A controlled backend endpoint can generate a visualization artifact from a
-   validated request. PostgreSQL selects the series, no filesystem path is
-   accepted from the client, and generated PNG metadata is registered before the
-   artifact metadata response is returned.
-10. The React dashboard fetches the API responses and displays a compact
-   metadata summary plus a read-only visualization artifact workbench.
+The Django REST Framework API exposes metadata, controlled artifact generation,
+registered artifact metadata, and registered PNG responses. It does not expose
+DICOM files, NumPy arrays, local paths, SQL explorer access, upload endpoints,
+or arbitrary filesystem browsing.
+
+The React/TypeScript workbench displays overview data, imaging metadata,
+analysis result metadata, artifact filters, controlled generation controls,
+registered PNGs, and artifact metadata. The browser submits scientific
+parameters, not paths or image data.
+
+## End-To-End Data Flow
+
+1. A reviewer optionally downloads the selected public deidentified TCIA CT and
+   PT series into local ignored data directories.
+2. Local validation checks expected files and DICOM headers without reading
+   pixel arrays.
+3. Metadata ingestion creates or updates `ImagingStudy`, `ImagingSeries`,
+   `ImagingInstance`, and `LocalDicomFile` records in PostgreSQL.
+4. Metadata-only analysis can produce a geometry summary from stored rows,
+   columns, spacing, counts, and related series metadata.
+5. For visualization work, PostgreSQL selects the series and instance. The
+   server resolves the related `LocalDicomFile` and explicitly loads the local
+   DICOM pixel array.
+6. The scientific operation layer applies DICOM rescaling and optionally runs
+   Gaussian filtering or Sobel gradient magnitude through SciPy.
+7. The visualization layer renders a PNG with Matplotlib. CT rescale and
+   Gaussian displays can use window center and width; percentile controls are
+   used for supported display scaling.
+8. The artifact registry validates the repository-relative PNG path, checksum,
+   file size, operation, modality, units, display range, and source instance,
+   then registers the metadata in PostgreSQL.
+9. The API returns registered artifact metadata and an `image_url`. It serves
+   PNG bytes only through artifact database IDs.
+10. The frontend refreshes the artifact collection, selects the generated
+    artifact, displays the PNG, and renders registered scientific metadata.
+
+## PostgreSQL Role
+
+PostgreSQL is the authoritative registry for imaging metadata, ingestion
+metadata, analysis metadata, local DICOM file records, and visualization
+artifact metadata. It records enough provenance to select source DICOM files
+and review generated artifacts, including UIDs, modality, operation, slice
+index, value units, display range, checksum, and file size.
+
+It intentionally does not store PNG bytes or NumPy arrays.
+
+## Filesystem Role
+
+Raw DICOM files remain local-only and ignored by Git. Generated visualization
+PNGs are written as local files and are also ignored by Git. Server-side code
+uses repository-relative registry paths to locate these files, while public API
+responses avoid exposing those paths.
+
+## Artifact Lifecycle
+
+An artifact starts with a controlled request containing a series UID, operation,
+and optional scientific display parameters. The backend validates the request,
+selects source data through PostgreSQL, runs the scientific operation, renders a
+PNG, validates and registers artifact metadata, and returns the registered
+artifact representation.
+
+Repeated generation of the same artifact path updates the existing
+`VisualizationArtifact` row through the registry rather than creating duplicate
+path records. The model keeps `relative_path` unique and continues to validate
+that artifact paths remain repository-relative under `outputs/visualizations/`.
+
+## API Safety Boundary
+
+The public API boundary is intentionally narrow:
+
+- Metadata endpoints are read-only.
+- Artifact generation accepts controlled scientific parameters only.
+- Clients cannot submit DICOM paths, PNG paths, output paths, image bytes, or
+  NumPy arrays.
+- Local filesystem paths are not returned in public responses.
+- PNGs are served through registered artifact IDs.
+- PT values are reported as `rescaled_pixel_value`, not SUV.
+
+## Operation-Generation Flow
+
+The implemented operation flow supports:
+
+- `rescale`: DICOM rescale slope/intercept. CT units are `HU`; PT units are
+  `rescaled_pixel_value`.
+- `gaussian`: rescale followed by SciPy Gaussian smoothing with a positive
+  sigma.
+- `sobel`: rescale followed by Sobel gradient magnitude.
+
+The output array is a private local process result. Matplotlib renders the
+selected display to PNG, and only artifact metadata plus image access by
+registered ID crosses the API boundary.
 
 ## Frontend Role
 
-The frontend is intentionally small. It proves that the backend APIs are usable
-from a browser-based dashboard and displays:
+The frontend is a reviewer-facing scientific workbench, not a processing
+engine. It validates the generation form, sends the selected parameters to the
+backend, refreshes the artifact list after successful generation, selects the
+returned artifact, and displays the PNG through the returned `image_url`.
 
-- Overview counts.
-- Modalities and latest ingestion status.
-- Imaging series metadata.
-- Stored quantitative measurement metadata.
-- Registered visualization artifact metadata with read-only filters.
-- Registered PNG images requested through artifact `image_url` values.
-- Controlled visualization generation by PostgreSQL series UID with supported
-  scientific parameters: operation, optional slice index, Gaussian sigma, CT
-  window center/width, percentile range, and DPI.
+It does not read local DICOM files, inspect local directories, upload files, run
+SciPy, store browser-side scientific arrays, or infer clinical meaning.
 
-It does not load raw DICOM files, does not expose local paths, does not upload
-files, and does not run analysis or artifact generation in the browser. The
-browser can submit only validated generation parameters to the backend API.
+## Non-Clinical Limitation
 
-## Safety Boundaries
-
-- Raw DICOM files are ignored by Git and remain local-only.
-- Local DICOM registry records store repository-relative paths only. Absolute
-  paths are rejected.
-- Local file paths are not exposed through the public metadata API.
-- No fake patient records or synthetic DICOM files are created.
-- No pixel arrays are read by ingestion or validation scripts.
-- Pixel arrays are read only by the private local DB-selected loader.
-- Scientific arrays produced from DB-selected DICOM pixels remain private local
-  process results. They are not stored in PostgreSQL or exposed through public
-  APIs. PNG visualization artifacts are local files ignored by Git.
-- PostgreSQL stores visualization artifact metadata only: the related
-  `ImagingInstance`, repository-relative path, checksum, file size, display
-  settings, operation, modality, and units. PNG bytes and NumPy arrays are not
-  stored.
-- Local visualization paths are not exposed through the public API. API access
-  to artifact metadata is read-only and serves PNG files only through artifact
-  IDs. The endpoint does not expose DICOM files or NumPy arrays.
-- Visualization generation can be triggered only with validated scientific
-  parameters: `series_instance_uid`, `operation`, optional `slice_index`,
-  `gaussian_sigma`, `window_center`, `window_width`, `lower_percentile`,
-  `upper_percentile`, and `dpi`. The API never accepts a client-provided DICOM,
-  output, or artifact path.
-- The API and frontend expose metadata only.
-- The geometry summary is derived from already ingested metadata.
-- The project is not intended for diagnosis, treatment decisions, or production
-  patient care.
-
-## Intentionally Out Of Scope For v0.1
-
-- Clinical deployment readiness.
-- Authentication and authorization.
-- Upload workflows.
-- SQL explorer or query-builder UI.
-- DICOM pixel visualization.
-- Image analysis algorithms.
-- Large dataset processing.
-- CI workflows that require local raw DICOM data.
-
-## Private Scientific Operations And Visualizations
-
-The `LocalDicomFile` registry is the bridge for scientific operations:
-PostgreSQL selects specific real DICOM instances, then local-only workers
-resolve repository-relative paths and explicitly load pixel data. Step 18 adds
-private local NumPy/SciPy operations for one selected two-dimensional slice:
-DICOM rescaling, Gaussian filtering, and Sobel gradient magnitude. Step 19 adds
-local PNG rendering from those scientific results without adding API or
-frontend exposure. Step 20 registers the generated PNG metadata in PostgreSQL
-without storing PNG bytes or NumPy arrays. Step 21 adds read-only artifact
-metadata and PNG responses for registered artifacts; operation execution and
-frontend operation controls remain separate future steps. Step 22 displays
-registered artifacts in the React dashboard with read-only filters and PNG
-requests through artifact image URLs. Step 23 adds a controlled backend
-visualization-generation endpoint that returns registered artifact metadata and
-`image_url`. Step 24 adds frontend controls for that endpoint, refreshes the
-artifact list, and selects the generated artifact for display.
+This repository is portfolio and research software. It has no clinical
+validation, diagnostic-accuracy claims, authentication layer, production
+deployment configuration, or machine-learning inference. Local raw DICOM data
+and generated visualization files remain outside version control by design.

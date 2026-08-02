@@ -8,6 +8,9 @@ For a quick portfolio review, start local services, apply migrations, run the
 one-command backend demo if the selected DICOM subset already exists locally,
 then start the API and frontend dashboard.
 
+For the focused visualization workbench walkthrough, see the
+[demo guide](demo.md).
+
 ## Environment Setup
 
 Create and activate a Python 3.12 environment using your preferred tool. Then
